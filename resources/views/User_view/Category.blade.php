@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Smart to do list</title>
 
     @vite('resources/css/app.css')
@@ -127,50 +128,23 @@
                                         <span class="mt-2 text-sm text-gray-600">Add New Task</span>
                                     </div>
                                 </div>
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Clean Room</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">High Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Clean and organize bedroom, including laundry and vacuuming.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Today</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Grocery Shopping</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Medium Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Buy groceries for the week, including fresh produce and household items.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Tomorrow</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Meal Prep</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Low Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Prepare meals for the week and organize the freezer.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: This Weekend</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @foreach($tasks as $task)
+                                    @if($task->category && $task->category->category_type === 'home')
+                                        <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-gray-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium {{ $task->status === 'pending' ? 'text-purple-700 bg-purple-100' : ($task->status === 'in_progress' ? 'text-blue-700 bg-blue-100' : 'text-green-700 bg-green-100') }} rounded-full">{{ $task->status }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-gray-600">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                                <span>Due: {{ $task->due_date->format('Y-m-d') }}</span>
+                                                <button class="text-gray-600 hover:text-gray-700">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
 
@@ -185,50 +159,23 @@
                                         <span class="mt-2 text-sm text-gray-600">Add New Task</span>
                                     </div>
                                 </div>
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Research Paper</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">High Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Complete research paper on environmental science topic.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Next Week</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Group Project</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">Medium Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Prepare presentation for group project on history.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Friday</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Study Session</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">Low Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Review notes for upcoming math exam.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Thursday</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @foreach($tasks as $task)
+                                    @if($task->category && $task->category->category_type === 'school')
+                                        <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-gray-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium {{ $task->status === 'pending' ? 'text-purple-700 bg-purple-100' : ($task->status === 'in_progress' ? 'text-blue-700 bg-blue-100' : 'text-green-700 bg-green-100') }} rounded-full">{{ $task->status }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-gray-600">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                                <span>Due: {{ $task->due_date->format('Y-m-d') }}</span>
+                                                <button class="text-gray-600 hover:text-gray-700">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
 
@@ -243,50 +190,23 @@
                                         <span class="mt-2 text-sm text-gray-600">Add New Task</span>
                                     </div>
                                 </div>
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Garden Maintenance</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">High Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Water plants, trim bushes, and clean garden area.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Today</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Bike Ride</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">Medium Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Go for a 30-minute bike ride in the park.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: Tomorrow</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-gray-800">Picnic Planning</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">Low Priority</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-gray-600">Plan and prepare for weekend picnic with friends.</p>
-                                    <div class="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Due: This Weekend</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @foreach($tasks as $task)
+                                    @if($task->category && $task->category->category_type === 'outdoors')
+                                        <div class="p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-gray-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium {{ $task->status === 'pending' ? 'text-purple-700 bg-purple-100' : ($task->status === 'in_progress' ? 'text-blue-700 bg-blue-100' : 'text-green-700 bg-green-100') }} rounded-full">{{ $task->status }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-gray-600">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                                <span>Due: {{ $task->due_date->format('Y-m-d') }}</span>
+                                                <button class="text-gray-600 hover:text-gray-700">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -308,18 +228,20 @@
             <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
                     <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">Add New Task</h3>
-                    <form id="addTaskForm">
+                    <form id="addTaskForm" method="POST" action="{{ route('tasks.store') }}">
+                        @csrf
+                        <input type="hidden" name="category_type" id="category_type">
                         <div class="mb-4">
                             <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                            <input type="text" name="title" id="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                            <input type="text" name="title" id="title" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
                         </div>
                         <div class="mb-4">
                             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description" id="description" rows="3" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"></textarea>
+                            <textarea name="description" id="description" rows="3" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"></textarea>
                         </div>
                         <div class="mb-4">
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select name="status" id="status" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                            <select name="status" id="status" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
                                 <option value="pending">Pending</option>
                                 <option value="in_progress">In Progress</option>
                                 <option value="complete">Complete</option>
@@ -327,17 +249,14 @@
                         </div>
                         <div class="mb-4">
                             <label for="due_date" class="block text-sm font-medium text-gray-700">Due Date</label>
-                            <input type="date" name="due_date" id="due_date" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                            <input type="date" name="due_date" id="due_date" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                        </div>
+                        <div class="mt-5 sm:mt-6">
+                            <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:text-sm">
+                                Create Task
+                            </button>
                         </div>
                     </form>
-                </div>
-                <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="createTask()" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Create
-                    </button>
-                    <button type="button" onclick="closeAddTaskModal()" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Discard
-                    </button>
                 </div>
             </div>
         </div>
@@ -348,6 +267,7 @@
 
         function openAddTaskModal(category) {
             currentCategory = category;
+            document.getElementById('category_type').value = category;
             document.getElementById('addTaskModal').classList.remove('hidden');
         }
 
@@ -356,29 +276,80 @@
             document.getElementById('addTaskForm').reset();
         }
 
-        function createTask() {
-            // Here you would typically send the form data to your backend
-            const formData = new FormData(document.getElementById('addTaskForm'));
-            const taskData = {
-                title: formData.get('title'),
-                description: formData.get('description'),
-                status: formData.get('status'),
-                due_date: formData.get('due_date'),
-                category: currentCategory
-            };
-
-            // TODO: Add your API call here to create the task
-            console.log('Creating task:', taskData);
-
-            closeAddTaskModal();
-        }
-
         // Close modal when clicking outside
         document.getElementById('addTaskModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeAddTaskModal();
             }
         });
+
+        // Handle form submission
+        document.getElementById('addTaskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Add the new task to the UI
+                    const task = data.task;
+                    const taskBox = createTaskBox(task);
+                    const categorySection = document.getElementById(`${task.category_type}-tasks`);
+                    const taskGrid = categorySection.querySelector('.grid');
+
+                    // Insert the new task box after the "Add Task" button
+                    const addTaskButton = taskGrid.querySelector('.cursor-pointer');
+                    taskGrid.insertBefore(taskBox, addTaskButton.nextSibling);
+
+                    closeAddTaskModal();
+                } else {
+                    alert('Error creating task: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error creating task. Please try again.');
+            });
+        });
+
+        function createTaskBox(task) {
+            const div = document.createElement('div');
+            div.className = 'p-4 transition-shadow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md';
+
+            const statusClass = task.status === 'pending' ? 'text-purple-700 bg-purple-100' :
+                              task.status === 'in_progress' ? 'text-blue-700 bg-blue-100' :
+                              'text-green-700 bg-green-100';
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-medium text-gray-800">${task.title}</h4>
+                    <span class="px-2 py-1 text-xs font-medium ${statusClass} rounded-full">${task.status}</span>
+                </div>
+                <p class="mb-3 text-sm text-gray-600">${task.description}</p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span>Due: ${task.due_date}</span>
+                    <button class="text-gray-600 hover:text-gray-700">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+
+            return div;
+        }
 
         function filterCategories(category) {
             // Hide all category sections

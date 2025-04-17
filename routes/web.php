@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NinjaController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,7 @@ Route::get('/status', function () {
     return view('User_view.Status');
 })->name('status')->middleware('auth');
 
-Route::get('/category', function () {
-    return view('User_view.Category');
-})->name('category')->middleware('auth');
+Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category')->middleware('auth');
 
 Route::get('/feedback', function () {
     return view('User_view.Feedback');
@@ -79,4 +78,6 @@ Route::middleware('auth')->controller(NinjaController::class)->group(function ()
     Route::post('/ninjas',  'store')->name('ninjas.store');
     Route::delete('/ninjas/{ninja}',  'destroy')->name('ninjas.destroy');
 });
+
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 
