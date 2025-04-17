@@ -71,4 +71,91 @@ class TaskController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'status' => 'required|in:pending,in_progress,complete',
+                'due_date' => 'required|date'
+            ]);
+
+            $task = Task::findOrFail($id);
+
+            // Check if the user owns this task
+            if ($task->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            // Update the task
+            $task->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'status' => $request->status,
+                'due_date' => $request->due_date
+            ]);
+
+            // Update status counts
+            Status::updateCounts();
+
+            // Format the task data for UI
+            $taskData = [
+                'id' => $task->task_id,
+                'title' => $task->title,
+                'description' => $task->description,
+                'status' => $task->status,
+                'due_date' => $task->due_date->format('Y-m-d'),
+                'category_type' => $task->category->category_type
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task updated successfully',
+                'task' => $taskData
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Task update error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating task: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $task = Task::findOrFail($id);
+
+            // Check if the user owns this task
+            if ($task->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            // Delete the task
+            $task->delete();
+
+            // Update status counts
+            Status::updateCounts();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Task deletion error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting task: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
