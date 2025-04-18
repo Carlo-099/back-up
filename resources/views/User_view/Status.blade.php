@@ -120,50 +120,24 @@
                         <div id="pending-tasks" class="mb-8 task-section">
                             <h3 class="mb-4 text-lg font-semibold text-yellow-700">Pending Tasks</h3>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow border border-purple-200 rounded-lg shadow-sm bg-purple-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-purple-800">Project Planning</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Home Activity</span>
+                                @forelse($tasks as $task)
+                                    @if($task->status == 'pending')
+                                        <div class="p-4 transition-shadow border border-purple-200 rounded-lg shadow-sm bg-purple-50 hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-purple-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">{{ $task->category->name ?? 'Uncategorized' }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-purple-700">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-purple-600">
+                                                <span>Due: {{ $task->due_date->format('M d, Y') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="col-span-3 p-4 text-center text-gray-500">
+                                        No pending tasks found.
                                     </div>
-                                    <p class="mb-3 text-sm text-purple-700">Create detailed project timeline and resource allocation plan for Q2.</p>
-                                    <div class="flex items-center justify-between text-sm text-purple-600">
-                                        <span>Due: May 15, 2024</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow border border-indigo-200 rounded-lg shadow-sm bg-indigo-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-indigo-800">Client Meeting</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">School Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-indigo-700">Schedule and prepare presentation for client review meeting.</p>
-                                    <div class="flex items-center justify-between text-sm text-indigo-600">
-                                        <span>Due: May 20, 2024</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow border rounded-lg shadow-sm bg-emerald-50 border-emerald-200 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-emerald-800">Documentation</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">Outdoors Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-emerald-700">Update user documentation with new feature specifications.</p>
-                                    <div class="flex items-center justify-between text-sm text-emerald-600">
-                                        <span>Due: May 25, 2024</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
 
@@ -171,50 +145,24 @@
                         <div id="in-progress-tasks" class="hidden mb-8 task-section">
                             <h3 class="mb-4 text-lg font-semibold text-blue-700">In Progress Tasks</h3>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow border border-purple-200 rounded-lg shadow-sm bg-purple-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-purple-800">Code Review</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Home Activity</span>
+                                @forelse($tasks as $task)
+                                    @if($task->status == 'in_progress')
+                                        <div class="p-4 transition-shadow border border-indigo-200 rounded-lg shadow-sm bg-indigo-50 hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-indigo-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">{{ $task->category->name ?? 'Uncategorized' }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-indigo-700">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-indigo-600">
+                                                <span>Due: {{ $task->due_date->format('M d, Y') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="col-span-3 p-4 text-center text-gray-500">
+                                        No in-progress tasks found.
                                     </div>
-                                    <p class="mb-3 text-sm text-purple-700">Review pull requests for new feature implementation.</p>
-                                    <div class="flex items-center justify-between text-sm text-purple-600">
-                                        <span>Due: May 18, 2024</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow border border-indigo-200 rounded-lg shadow-sm bg-indigo-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-indigo-800">Testing</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">School Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-indigo-700">Perform integration testing for new modules.</p>
-                                    <div class="flex items-center justify-between text-sm text-indigo-600">
-                                        <span>Due: May 22, 2024</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow border rounded-lg shadow-sm bg-emerald-50 border-emerald-200 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-emerald-800">Design Review</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">Outdoors Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-emerald-700">Review and approve new UI design mockups.</p>
-                                    <div class="flex items-center justify-between text-sm text-emerald-600">
-                                        <span>Due: May 28, 2024</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
 
@@ -222,50 +170,24 @@
                         <div id="completed-tasks" class="hidden mb-8 task-section">
                             <h3 class="mb-4 text-lg font-semibold text-green-700">Completed Tasks</h3>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                <!-- Task Box 1 -->
-                                <div class="p-4 transition-shadow border border-purple-200 rounded-lg shadow-sm bg-purple-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-purple-800">Initial Setup</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Home Activity</span>
+                                @forelse($tasks as $task)
+                                    @if($task->status == 'complete')
+                                        <div class="p-4 transition-shadow border rounded-lg shadow-sm bg-emerald-50 border-emerald-200 hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <h4 class="font-medium text-emerald-800">{{ $task->title }}</h4>
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">{{ $task->category->name ?? 'Uncategorized' }}</span>
+                                            </div>
+                                            <p class="mb-3 text-sm text-emerald-700">{{ $task->description }}</p>
+                                            <div class="flex items-center justify-between text-sm text-emerald-600">
+                                                <span>Completed: {{ $task->updated_at->format('M d, Y') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="col-span-3 p-4 text-center text-gray-500">
+                                        No completed tasks found.
                                     </div>
-                                    <p class="mb-3 text-sm text-purple-700">Project environment setup and configuration.</p>
-                                    <div class="flex items-center justify-between text-sm text-purple-600">
-                                        <span>Completed: May 10, 2024</span>
-                                        <button class="text-purple-600 hover:text-purple-700">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 2 -->
-                                <div class="p-4 transition-shadow border border-indigo-200 rounded-lg shadow-sm bg-indigo-50 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-indigo-800">Requirements</h4>
-                                        <span class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">School Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-indigo-700">Gather and document project requirements.</p>
-                                    <div class="flex items-center justify-between text-sm text-indigo-600">
-                                        <span>Completed: May 12, 2024</span>
-                                        <button class="text-indigo-600 hover:text-indigo-700">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Task Box 3 -->
-                                <div class="p-4 transition-shadow border rounded-lg shadow-sm bg-emerald-50 border-emerald-200 hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="font-medium text-emerald-800">Team Meeting</h4>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100">Outdoors Activity</span>
-                                    </div>
-                                    <p class="mb-3 text-sm text-emerald-700">Initial team meeting and project kickoff.</p>
-                                    <div class="flex items-center justify-between text-sm text-emerald-600">
-                                        <span>Completed: May 14, 2024</span>
-                                        <button class="text-emerald-600 hover:text-emerald-700">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>

@@ -2,18 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Status extends Model
 {
+    use HasFactory;
+
     protected $table = 'status';
     protected $primaryKey = 'status_id';
 
     protected $fillable = [
-        'pending',
-        'in_progress',
-        'complete'
+        'title',
+        'description',
+        'category',
+        'status',
+        'due_date',
+        'completed_at'
+    ];
+
+    protected $casts = [
+        'due_date' => 'datetime',
+        'completed_at' => 'datetime'
     ];
 
     public static function updateCounts()

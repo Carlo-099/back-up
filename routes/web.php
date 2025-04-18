@@ -5,6 +5,7 @@ use App\Http\Controllers\ContentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NinjaController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\StatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,7 @@ Route::get('/', function () {
 
 Route::get('/content', [ContentController::class, 'index'])->name('content')->middleware('auth');
 
-Route::get('/status', function () {
-    return view('User_view.Status');
-})->name('status')->middleware('auth');
+Route::get('/status', [StatusController::class, 'index'])->name('status')->middleware('auth');
 
 Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category')->middleware('auth');
 
