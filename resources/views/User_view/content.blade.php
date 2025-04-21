@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Smart to do list</title>
 
     @vite('resources/css/app.css')
@@ -146,6 +147,64 @@
         </div>
     </div>
 
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                    <div class="flex items-start justify-between">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">Add New Task</h3>
+                        <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeAddTaskModal()">
+                            <span class="sr-only">Close</span>
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="addTaskForm" method="POST" action="{{ route('tasks.store') }}">
+                        @csrf
+                        <input type="hidden" name="category_type" id="category_type">
+                        <div class="mb-4">
+                            <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                            <input type="text" name="title" id="title" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                        </div>
+                        <div class="mb-4">
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea name="description" id="description" rows="3" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" id="status" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="complete">Complete</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                            <select name="category" id="category" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                                <option value="home">Home</option>
+                                <option value="school">School</option>
+                                <option value="outdoors">Outdoors</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="due_date" class="block text-sm font-medium text-gray-700">Due Date</label>
+                            <input type="date" name="due_date" id="due_date" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                        </div>
+                        <div class="mt-5 sm:mt-6">
+                            <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:text-sm">
+                                Create Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -205,6 +264,12 @@
                         'display': 'inline-block',
                         'width': '100%'
                     });
+                },
+                dayClick: function(date, jsEvent, view) {
+                    // Handle double-click on a day
+                    if (jsEvent.detail === 2) {
+                        openAddTaskModal(date);
+                    }
                 }
             });
         });
@@ -264,6 +329,86 @@
         function closeTaskDetailsModal() {
             document.getElementById('taskDetailsModal').classList.add('hidden');
         }
+
+        function openAddTaskModal(date) {
+            // Format the date as YYYY-MM-DD for the input field
+            const formattedDate = moment(date).format('YYYY-MM-DD');
+
+            // Set the due date in the form
+            document.getElementById('due_date').value = formattedDate;
+
+            // Set the category_type field to match the selected category
+            const category = document.getElementById('category').value;
+            document.getElementById('category_type').value = category;
+
+            // Show the modal
+            document.getElementById('addTaskModal').classList.remove('hidden');
+        }
+
+        function closeAddTaskModal() {
+            document.getElementById('addTaskModal').classList.add('hidden');
+            document.getElementById('addTaskForm').reset();
+
+            // Reset the category_type field
+            document.getElementById('category_type').value = '';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('addTaskModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddTaskModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('addTaskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Set the category_type based on the selected category
+            const category = document.getElementById('category').value;
+            formData.set('category_type', category);
+
+            // Log the form data for debugging
+            console.log('Form data:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Refresh the calendar to show the new task
+                    $('#calendar').fullCalendar('refetchEvents');
+                    closeAddTaskModal();
+                } else {
+                    alert('Error creating task: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error creating task. Please try again.');
+            });
+        });
+
+        // Update category_type when category changes
+        document.getElementById('category').addEventListener('change', function() {
+            document.getElementById('category_type').value = this.value;
+        });
     </script>
 </body>
 </html>
