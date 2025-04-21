@@ -105,6 +105,47 @@
         </div>
     </div>
 
+    <!-- Task Details Modal -->
+    <div id="taskDetailsModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                    <div class="flex items-start justify-between">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modalTaskTitle"></h3>
+                        <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeTaskDetailsModal()">
+                            <span class="sr-only">Close</span>
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                            <p class="mt-1 text-sm text-gray-900" id="modalTaskDescription"></p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Category</label>
+                            <p class="mt-1 text-sm text-gray-900" id="modalTaskCategory"></p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Due Date</label>
+                            <p class="mt-1 text-sm text-gray-900" id="modalTaskDueDate"></p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <p class="mt-1">
+                                <span id="modalTaskStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -126,28 +167,103 @@
                 editable: true,
                 selectable: true,
                 selectHelper: true,
-                select: function(start, end) {
-                    // Handle date selection
-                    alert('Selected from: ' + start.format() + ' to: ' + end.format());
+                events: function(start, end, timezone, callback) {
+                    // Fetch tasks from the backend
+                    $.ajax({
+                        url: '{{ route("tasks.index") }}',
+                        type: 'GET',
+                        success: function(response) {
+                            const events = response.tasks.map(task => ({
+                                id: task.task_id,
+                                title: task.title,
+                                start: task.due_date,
+                                description: task.description,
+                                category: task.category_type,
+                                status: task.status,
+                                className: getStatusClass(task.status),
+                                textColor: getStatusTextColor(task.status),
+                                backgroundColor: getStatusBackgroundColor(task.status)
+                            }));
+                            callback(events);
+                        },
+                        error: function(error) {
+                            console.error('Error fetching tasks:', error);
+                            callback([]);
+                        }
+                    });
                 },
                 eventClick: function(event) {
-                    // Handle event click
-                    alert('Event: ' + event.title);
+                    showTaskDetails(event);
                 },
-                events: [
-                    // Example events - you can replace these with your actual tasks
-                    {
-                        title: 'Task 1',
-                        start: '2024-03-20'
-                    },
-                    {
-                        title: 'Task 2',
-                        start: '2024-03-21',
-                        end: '2024-03-23'
-                    }
-                ]
+                eventRender: function(event, element) {
+                    // Add custom styling to the event title
+                    element.find('.fc-title').css({
+                        'background-color': event.backgroundColor,
+                        'color': event.textColor,
+                        'padding': '2px 6px',
+                        'border-radius': '4px',
+                        'display': 'inline-block',
+                        'width': '100%'
+                    });
+                }
             });
         });
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'pending':
+                    return 'bg-purple-100 text-purple-700';
+                case 'in_progress':
+                    return 'bg-blue-100 text-blue-700';
+                case 'complete':
+                    return 'bg-green-100 text-green-700';
+                default:
+                    return '';
+            }
+        }
+
+        function getStatusTextColor(status) {
+            switch(status) {
+                case 'pending':
+                    return '#6B46C1'; // Purple text
+                case 'in_progress':
+                    return '#2563EB'; // Blue text
+                case 'complete':
+                    return '#059669'; // Green text
+                default:
+                    return '#000000';
+            }
+        }
+
+        function getStatusBackgroundColor(status) {
+            switch(status) {
+                case 'pending':
+                    return '#F3E8FF'; // Light purple background
+                case 'in_progress':
+                    return '#DBEAFE'; // Light blue background
+                case 'complete':
+                    return '#D1FAE5'; // Light green background
+                default:
+                    return '#FFFFFF';
+            }
+        }
+
+        function showTaskDetails(event) {
+            document.getElementById('modalTaskTitle').textContent = event.title;
+            document.getElementById('modalTaskDescription').textContent = event.description;
+            document.getElementById('modalTaskCategory').textContent = event.category;
+            document.getElementById('modalTaskDueDate').textContent = moment(event.start).format('MMMM D, YYYY');
+
+            const statusElement = document.getElementById('modalTaskStatus');
+            statusElement.textContent = event.status;
+            statusElement.className = `px-2 py-1 text-xs font-medium rounded-full ${getStatusClass(event.status)}`;
+
+            document.getElementById('taskDetailsModal').classList.remove('hidden');
+        }
+
+        function closeTaskDetailsModal() {
+            document.getElementById('taskDetailsModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>

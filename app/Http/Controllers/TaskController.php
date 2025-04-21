@@ -11,6 +11,36 @@ use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
+    public function index()
+    {
+        try {
+            $tasks = Task::with('category')
+                ->where('user_id', Auth::id())
+                ->get()
+                ->map(function ($task) {
+                    return [
+                        'task_id' => $task->task_id,
+                        'title' => $task->title,
+                        'description' => $task->description,
+                        'status' => $task->status,
+                        'due_date' => $task->due_date->format('Y-m-d'),
+                        'category_type' => $task->category->category_type
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'tasks' => $tasks
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching tasks: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching tasks: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {
