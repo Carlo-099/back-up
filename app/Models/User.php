@@ -43,4 +43,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the reference associated with the user.
+     */
+    public function reference()
+    {
+        return $this->hasOne(Reference::class, 'user_id', 'id');
+    }
 }

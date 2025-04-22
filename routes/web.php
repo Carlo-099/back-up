@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NinjaController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\AdminSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,11 +38,12 @@ Route::get('/productivity-insight', function () {
     return view('User_view.Productivity_insight');
 })->name('productivity-insight')->middleware('auth');
 
-Route::get('/setting', function(){
-    return view('User_view/setting');
-})->name('setting') ->middleware('auth');
+Route::get('/setting', [SettingController::class, 'index'])->name('setting')->middleware('auth');
+Route::post('/setting', [SettingController::class, 'update'])->name('setting.update')->middleware('auth');
 
-
+// Admin Settings Routes
+Route::get('/admin-setting', [AdminSettingController::class, 'index'])->name('AdminSetting')->middleware('auth');
+Route::post('/admin-setting', [AdminSettingController::class, 'update'])->name('admin.setting.update')->middleware('auth');
 
 //THIS PART IS THE ROUTES FOR THE ADMIN
 Route::get('/user-manage', function () {
@@ -54,10 +57,6 @@ Route::get('/send-announcement', function () {
 Route::get('/read-feedback', function () {
     return view('Admin_view.ReadFeedback');
 })->name('read-feedback')->middleware('auth');
-
-Route::get('/AdminSetting', function(){
-    return view('Admin_view.AdminSetting');
-})->name('AdminSetting') ->middleware('auth');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

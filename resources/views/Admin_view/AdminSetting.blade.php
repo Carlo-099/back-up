@@ -92,52 +92,78 @@
 
                     <div class="flex-1 p-8">
                         <div class="p-6 bg-white rounded-lg shadow-lg">
-                            <h2 class="mb-6 text-xl font-semibold text-gray-800">Settings</h2>
+                            <h2 class="mb-6 text-xl font-semibold text-gray-800">Admin Settings</h2>
 
-                            <div class="space-y-4">
-                                <!-- Change Email -->
-                                <div>
-                                    <label class="block text-gray-700">Change Email:</label>
-                                    <input type="email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md">
+                            @if(session('success'))
+                                <div class="p-4 mb-4 text-green-700 bg-green-100 rounded-md">
+                                    {{ session('success') }}
                                 </div>
+                            @endif
 
-                                <!-- Change Password -->
-                                <div>
-                                    <label class="block text-gray-700">Change Password:</label>
-                                    <input type="password" placeholder="Enter new password" class="w-full p-2 mt-1 border rounded-md">
+                            @if(session('error'))
+                                <div class="p-4 mb-4 text-red-700 bg-red-100 rounded-md">
+                                    {{ session('error') }}
                                 </div>
+                            @endif
 
-                                <!-- Change Profile Picture -->
-                                <div>
-                                    <label class="block text-gray-700">Change Profile Picture:</label>
-                                    <input type="file" class="w-full p-2 mt-1 border rounded-md">
+                            @if($errors->any())
+                                <div class="p-4 mb-4 text-red-700 bg-red-100 rounded-md">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
+                            @endif
 
-                                <!-- Dark / Light Mode -->
-                                <div>
-                                    <label class="block text-gray-700">Theme:</label>
-                                    <select class="w-full p-2 mt-1 border rounded-md">
-                                        <option>Light Mode</option>
-                                        <option>Dark Mode</option>
-                                    </select>
-                                </div>
+                            <form action="{{ route('admin.setting.update') }}" method="POST" enctype="multipart/form-data" id="admin-settings-form">
+                                @csrf
+                                <div class="space-y-4">
+                                    <!-- Change Email -->
+                                    <div>
+                                        <label class="block text-gray-700">Change Email:</label>
+                                        <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md" value="{{ $settings->change_email ?? '' }}">
+                                    </div>
 
-                                <!-- Notifications -->
-                                <div>
-                                    <label class="block text-gray-700">Notifications:</label>
-                                    <select class="w-full p-2 mt-1 border rounded-md">
-                                        <option>Turn On</option>
-                                        <option>Turn Off</option>
-                                    </select>
-                                </div>
+                                    <!-- Change Password -->
+                                    <div>
+                                        <label class="block text-gray-700">Change Password:</label>
+                                        <input type="password" name="change_password" placeholder="Enter new password" class="w-full p-2 mt-1 border rounded-md">
+                                    </div>
 
-                                <!-- Buttons -->
-                                <div class="flex space-x-4">
-                                    <button class="px-4 py-2 font-semibold text-white bg-blue-600 rounded-md">Update</button>
-                                    <button class="px-4 py-2 font-semibold text-white bg-gray-500 rounded-md">Restore</button>
+                                    <!-- Change Profile Picture -->
+                                    <div>
+                                        <label class="block text-gray-700">Change Profile Picture:</label>
+                                        <input type="file" name="profile_picture" class="w-full p-2 mt-1 border rounded-md">
+                                    </div>
+
+                                    <!-- Dark / Light Mode -->
+                                    <div>
+                                        <label class="block text-gray-700">Theme:</label>
+                                        <select name="theme" class="w-full p-2 mt-1 border rounded-md">
+                                            <option value="light" {{ ($settings->theme ?? '') == 'light' ? 'selected' : '' }}>Light Mode</option>
+                                            <option value="dark" {{ ($settings->theme ?? '') == 'dark' ? 'selected' : '' }}>Dark Mode</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Notifications -->
+                                    <div>
+                                        <label class="block text-gray-700">Notifications:</label>
+                                        <select name="notification" class="w-full p-2 mt-1 border rounded-md">
+                                            <option value="1" {{ ($settings->notification ?? false) ? 'selected' : '' }}>Turn On</option>
+                                            <option value="0" {{ ($settings->notification ?? false) ? '' : 'selected' }}>Turn Off</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="flex space-x-4">
+                                        <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded-md">Update</button>
+                                        <button type="reset" class="px-4 py-2 font-semibold text-white bg-gray-500 rounded-md">Restore</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
+                    </div>
 
 
 
@@ -155,6 +181,46 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('admin-settings-form');
+
+            if (form) {
+                console.log('Admin settings form found:', form);
+
+                // Log the form action
+                console.log('Form action:', form.getAttribute('action'));
+
+                form.addEventListener('submit', function(e) {
+                    console.log('Admin settings form submitted');
+
+                    // Log form data
+                    const formData = new FormData(form);
+                    for (let pair of formData.entries()) {
+                        console.log(pair[0] + ': ' + pair[1]);
+                    }
+                });
+            } else {
+                console.error('Admin settings form not found');
+            }
+
+            // Add click event to the update button
+            const updateButton = document.querySelector('button[type="submit"]');
+            if (updateButton) {
+                updateButton.addEventListener('click', function(e) {
+                    console.log('Admin update button clicked');
+                });
+            }
+
+            // Add click event to the restore button
+            const restoreButton = document.querySelector('button[type="reset"]');
+            if (restoreButton) {
+                restoreButton.addEventListener('click', function(e) {
+                    console.log('Admin restore button clicked');
+                });
+            }
+        });
+    </script>
 
 </body>
 
