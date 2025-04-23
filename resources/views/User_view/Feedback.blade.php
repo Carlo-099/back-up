@@ -1,7 +1,6 @@
 <x-userlayout>
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="overflow-hidden bg-white rounded-lg shadow-lg">
+
                     <!-- Title Bar -->
                     <div class="border-b border-gray-200">
                         <div class="px-6 py-4">

@@ -1,10 +1,8 @@
 <x-userlayout>
 
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="overflow-hidden bg-white rounded-lg shadow-lg">
                     <!-- Title Bar with Category Buttons -->
-                    <div class="border-b border-gray-200">
+                    <div class="border-b border-gray-200"  >
                         <div class="px-6 py-4">
                             <h2 class="text-xl font-semibold text-gray-800">Task Categories</h2>
                         </div>
@@ -22,7 +20,7 @@
                     </div>
 
                     <!-- Content Area -->
-                    <div class="p-6 bg-purple-50">
+                    <div class="p-6 bg-purple-50" style=" width: 100%;">
                         <!-- Home Activities -->
                         <div id="home-tasks" class="mb-8 category-section">
                             <h3 class="mb-4 text-lg font-semibold text-purple-700">Home Activities</h3>
@@ -131,10 +129,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            >
+
+
+
+
+
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -515,4 +515,5 @@
             });
         });
     </script>
+
 </x-userlayout>

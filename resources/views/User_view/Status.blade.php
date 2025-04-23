@@ -1,8 +1,7 @@
 <x-userlayout>
 
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="overflow-hidden bg-white rounded-lg shadow-lg">
+
                     <!-- Title Bar with Status Buttons -->
                     <div class="border-b border-gray-200">
                         <div class="px-6 py-4">
@@ -22,10 +21,10 @@
                     </div>
 
                     <!-- Content Area -->
-                    <div class="p-6 bg-yellow-50">
+
                         <!-- Pending Tasks -->
                         <div id="pending-tasks" class="mb-8 task-section">
-                            <h3 class="mb-4 text-lg font-semibold text-yellow-700">Pending Tasks</h3>
+                            <h3 class="mb-4 text-lg font-semibold text-red-700">In Progress Tasks</h3>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 @forelse($tasks as $task)
                                     @if($task->status == 'pending')
@@ -97,11 +96,8 @@
                                 @endforelse
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

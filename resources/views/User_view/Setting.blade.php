@@ -1,8 +1,7 @@
 <x-userlayout>
             <!-- Main Content -->
 
-                    <div class="flex-1 p-8">
-                        <div class="p-6 bg-white rounded-lg shadow-lg">
+
                             <h2 class="mb-6 text-xl font-semibold text-gray-800">Settings</h2>
 
                             @if(session('success'))

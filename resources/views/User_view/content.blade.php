@@ -1,12 +1,5 @@
 <x-userlayout>
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="p-6 bg-white rounded-lg shadow-lg">
-                    <div id="calendar"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Task Details Modal -->
     <div id="taskDetailsModal" class="fixed inset-0 z-50 hidden overflow-y-auto">

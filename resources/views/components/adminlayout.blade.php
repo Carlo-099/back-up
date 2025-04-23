@@ -49,12 +49,27 @@
                     @auth
                         <div class="flex flex-col items-center mb-6">
                             <div class="w-24 h-24 mb-3 overflow-hidden rounded-full">
-                                <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=0D9488&color=fff"
+                                @php
+                                    $user = Auth::user();
+                                    $reference = $user->reference;
+                                    $settings = $reference ? $reference->settings : null;
+
+                                    $profilePicture = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=0D9488&color=fff";
+
+                                    if ($settings && $settings->profile_picture) {
+                                        // Check if the path already includes the directory
+                                        if (strpos($settings->profile_picture, 'uploads/profile_pictures/') === 0) {
+                                            $profilePicture = asset($settings->profile_picture);
+                                        } else {
+                                            $profilePicture = asset('uploads/profile_pictures/' . $settings->profile_picture);
+                                        }
+                                    }
+                                @endphp
+                                <img src="{{ $profilePicture }}"
                                      alt="Profile"
                                      class="object-cover w-full h-full">
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800">{{ Auth::user()->name }}</h3>
-
                         </div>
                     @endauth
 
@@ -88,9 +103,14 @@
                 </div>
             </div>
 
+            <div class="flex-1 p-8">
+                <div class="p-6 bg-white rounded-lg shadow-lg">
             <main class="container">
                 {{ $slot }}
             </main>
+
+            </div>
+            </div>
 
         </div>
      </div>
