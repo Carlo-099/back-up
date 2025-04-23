@@ -35,6 +35,12 @@
                                         <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md" value="{{ $settings->change_email ?? '' }}">
                                     </div>
 
+                                    <!-- Current Password -->
+                                    <div>
+                                        <label class="block text-gray-700">Enter Current Password:</label>
+                                        <input type="password" name="current_password" placeholder="Enter your current password" class="w-full p-2 mt-1 border rounded-md">
+                                    </div>
+
                                     <!-- Change Password -->
                                     <div>
                                         <label class="block text-gray-700">Change Password:</label>
@@ -93,6 +99,25 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('settings-form');
+            const currentPasswordInput = document.querySelector('input[name="current_password"]');
+            const changePasswordInput = document.querySelector('input[name="change_password"]');
+
+            // Initially disable the change password field
+            if (changePasswordInput) {
+                changePasswordInput.disabled = true;
+                changePasswordInput.placeholder = "Enter current password first";
+            }
+
+            // Add event listener to current password field
+            if (currentPasswordInput) {
+                currentPasswordInput.addEventListener('input', function() {
+                    // Enable the change password field when current password is entered
+                    if (changePasswordInput) {
+                        changePasswordInput.disabled = false;
+                        changePasswordInput.placeholder = "Enter new password";
+                    }
+                });
+            }
 
             if (form) {
                 console.log('Form found:', form);

@@ -112,26 +112,22 @@
             // Show selected task section
             document.getElementById(`${status}-tasks`).classList.remove('hidden');
 
-            // Update button styles
+            // Update button styles - remove active class from all buttons
             document.querySelectorAll('.status-btn').forEach(btn => {
-                btn.classList.remove('bg-yellow-50', 'border-yellow-300', 'bg-blue-50', 'border-blue-300', 'bg-green-50', 'border-green-300');
+                btn.classList.remove('active');
             });
 
-            // Update content area background color
-            const contentArea = document.querySelector('.p-6');
-            contentArea.classList.remove('bg-yellow-50', 'bg-blue-50', 'bg-green-50');
-
-            // Add appropriate color classes based on status
+            // Add active class to the clicked button
             const activeBtn = event.currentTarget;
+            activeBtn.classList.add('active');
+
+            // Apply specific styling based on status
             if (status === 'pending') {
-                activeBtn.classList.add('bg-yellow-50', 'border-yellow-300');
-                contentArea.classList.add('bg-yellow-50');
+                activeBtn.classList.add('bg-yellow-100');
             } else if (status === 'in-progress') {
-                activeBtn.classList.add('bg-blue-50', 'border-blue-300');
-                contentArea.classList.add('bg-blue-50');
+                activeBtn.classList.add('bg-blue-100');
             } else if (status === 'completed') {
-                activeBtn.classList.add('bg-green-50', 'border-green-300');
-                contentArea.classList.add('bg-green-50');
+                activeBtn.classList.add('bg-green-100');
             }
         }
     </script>

@@ -55,6 +55,7 @@ class SettingController extends Controller
         // Validate the request
         $validator = Validator::make($request->all(), [
             'change_email' => 'nullable|email|unique:users,email,' . $user->id,
+            'current_password' => 'required_with:change_password',
             'change_password' => 'nullable|min:6',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'theme' => 'nullable|in:light,dark',
@@ -74,6 +75,13 @@ class SettingController extends Controller
         }
 
         if ($request->filled('change_password')) {
+            // Verify current password before allowing password change
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()
+                    ->withErrors(['current_password' => 'The current password is incorrect.'])
+                    ->withInput();
+            }
+
             // Get the user model directly to avoid double hashing
             $userModel = User::find($user->id);
             $userModel->password = $request->change_password; // The model will hash this automatically
