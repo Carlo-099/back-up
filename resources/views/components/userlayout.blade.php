@@ -1,4 +1,5 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ Auth::check() && Auth::user()->reference && Auth::user()->reference->settings ? Auth::user()->reference->settings->theme : 'light' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,13 +7,241 @@
     <title>Smart to do list</title>
 
     @vite('resources/css/app.css')
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
     <!-- FullCalendar CSS -->
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <style>
+        :root[data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #48A6A7;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #0d6efd;
+            --hover-color: #e9ecef;
+
+            /* Light Theme (my second option) */
+            --topnavbar-bg: #9FB3DF;
+            --sidenavbar-bg: #9EC6F3;
+            --menubutton-bg:#BDDDE4;
+            --menubuttonhover-bg: #ffffff;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-primary: #212529;
+            --bg-secondary: #343a40;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --border-color: #495057;
+            --accent-color: #0d6efd;
+            --hover-color: #495057;
+
+            /* Dark Theme (my second option) */
+            --topnavbar-bg: #2C3E50;
+            --sidenavbar-bg: #34495E;
+            --menubutton-bg: #3498DB;
+            --menubuttonhover-bg: #2980B9;
+        }
+
+        /* Menu button styles */
+        .menu-button {
+            display: block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            color: var(--text-primary);
+            background-color: var(--menubutton-bg);
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-button:hover {
+            background-color: var(--menubuttonhover-bg);
+        }
+
+        /* Theme-specific styles */
+        [data-theme="light"] .menu-button {
+            background-color: var(--menubutton-bg);
+        }
+
+        [data-theme="light"] .menu-button:hover {
+            background-color: var(--menubuttonhover-bg);
+        }
+
+        [data-theme="dark"] .menu-button {
+            background-color: var(--menubutton-bg);
+        }
+
+        [data-theme="dark"] .menu-button:hover {
+            background-color: var(--menubuttonhover-bg);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background-color: var(--bg-secondary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand, .nav-link {
+            color: var(--text-primary) !important;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .card-header {
+            background-color: var(--bg-secondary);
+            border-bottom-color: var(--border-color);
+        }
+
+        .table {
+            color: var(--text-primary);
+        }
+
+        .table thead th {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .table td {
+            border-color: var(--border-color);
+        }
+
+        .form-control {
+            background-color: var(--bg-primary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            background-color: var(--bg-primary);
+            border-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+
+        .btn-outline-secondary {
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .modal-content {
+            background-color: var(--bg-primary);
+            border-color: var(--border-color);
+        }
+
+        .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        .modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        .dropdown-menu {
+            background-color: var(--bg-primary);
+            border-color: var(--border-color);
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .alert {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+    </style>
+    <script>
+        // Function to apply theme to menu buttons
+        function applyThemeToMenuButtons() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const menuButtons = document.querySelectorAll('.menu-button');
+
+            menuButtons.forEach(button => {
+                if (theme === 'dark') {
+                    button.style.setProperty('background-color', 'var(--menubutton-bg)', 'important');
+                    button.style.setProperty('color', 'var(--text-primary)', 'important');
+
+                    // Add hover effect
+                    button.onmouseover = function() {
+                        this.style.setProperty('background-color', 'var(--menubuttonhover-bg)', 'important');
+                    };
+                    button.onmouseout = function() {
+                        this.style.setProperty('background-color', 'var(--menubutton-bg)', 'important');
+                    };
+                } else {
+                    button.style.setProperty('background-color', 'var(--menubutton-bg)', 'important');
+                    button.style.setProperty('color', 'var(--text-primary)', 'important');
+
+                    // Add hover effect
+                    button.onmouseover = function() {
+                        this.style.setProperty('background-color', 'var(--menubuttonhover-bg)', 'important');
+                    };
+                    button.onmouseout = function() {
+                        this.style.setProperty('background-color', 'var(--menubutton-bg)', 'important');
+                    };
+                }
+            });
+        }
+
+        // Function to apply theme from localStorage or server-side setting
+        function applyTheme() {
+            // First check if there's a theme in localStorage
+            const savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme) {
+                // Apply the theme from localStorage
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else {
+                // If no theme in localStorage, use the server-side theme
+                const serverTheme = document.documentElement.getAttribute('data-theme');
+                if (serverTheme) {
+                    // Save the server-side theme to localStorage for consistency
+                    localStorage.setItem('theme', serverTheme);
+                }
+            }
+
+            // Apply theme to menu buttons
+            applyThemeToMenuButtons();
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', applyTheme);
+
+        // Run when theme changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-theme') {
+                    applyThemeToMenuButtons();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, { attributes: true });
+    </script>
 </head>
 <body>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- Top Navigation Bar -->
-        <nav class="bg-white shadow-md">
+        <nav class="shadow-md" style="background-color: var(--topnavbar-bg);">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
@@ -20,7 +249,7 @@
                         <div class="flex items-center">
                             <a href="/" class="flex items-center">
                                 <img src="/images/logo.png" alt="Logo" class="w-8 h-8 mr-2">
-                                <span class="text-xl font-bold text-gray-800">Smart to do list</span>
+                                <span class="text-xl font-bold" style="color: var(--text-primary);">Smart to do list</span>
                             </a>
                         </div>
                     </div>
@@ -28,9 +257,9 @@
                     <!-- Right side -->
                     <div class="flex items-center space-x-4">
                         @auth
-                            <span class="text-gray-700">Hi, {{ Auth::user()->name }}</span>
+                            <span style="color: var(--text-primary);">Hi, {{ Auth::user()->name }}</span>
                             <!-- Notification Button -->
-                            <button class="relative p-2 text-gray-600 rounded-full hover:bg-gray-100">
+                            <button class="relative p-2 rounded-full" style="color: var(--text-primary);">
                                 <i class="fas fa-bell"></i>
                                 <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                             </button>
@@ -46,7 +275,7 @@
 
         <div class="flex">
             <!-- Sidebar -->
-            <div class="w-64 min-h-screen bg-white shadow-md">
+            <div class="w-64 min-h-screen shadow-md" style="background-color: var(--sidenavbar-bg);">
                 <div class="p-4">
                     <!-- User Profile Section -->
                     @auth
@@ -72,39 +301,39 @@
                                      alt="Profile"
                                      class="object-cover w-full h-full">
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-800">{{ Auth::user()->name }}</h3>
+                            <h3 class="text-lg font-semibold" style="color: var(--text-primary);">{{ Auth::user()->name }}</h3>
                         </div>
                     @endauth
 
-                    <h2 class="mb-4 text-lg font-semibold text-gray-800">Menu</h2>
+                    <h2 class="mb-4 text-lg font-semibold" style="color: var(--text-primary);">Menu</h2>
                     <nav class="space-y-2">
                         @auth
-                            <a href="{{ route('content') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('content') }}" class="menu-button">
                                 <i class="mr-2 fas fa-calendar-alt"></i> Calendar
                             </a>
-                            <a href="{{ route('status') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('status') }}" class="menu-button">
                                 <i class="mr-2 fas fa-chart-line"></i> Status
                             </a>
-                            <a href="{{ route('category') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('category') }}" class="menu-button">
                                 <i class="mr-2 fas fa-tags"></i> Category
                             </a>
-                            <a href="{{ route('feedback') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('feedback') }}" class="menu-button">
                                 <i class="mr-2 fas fa-comments"></i> Feedback
                             </a>
-                            <a href="{{ route('productivity-insight') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('productivity-insight') }}" class="menu-button">
                                 <i class="mr-2 fas fa-chart-bar"></i> Productivity Insight
                             </a>
 
-                            <hr class="my-4 border-gray-200">
+                            <hr class="my-4" style="border-color: var(--border-color);">
 
-                            <a href={{ route('setting') }} class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href={{ route('setting') }} class="menu-button">
                                 <i class="mr-2 fas fa-cog"></i> Settings
                             </a>
                         @else
-                            <a href="{{ route('show.login') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('show.login') }}" class="menu-button">
                                 <i class="mr-2 fas fa-sign-in-alt"></i> Login
                             </a>
-                            <a href="{{ route('show.register') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <a href="{{ route('show.register') }}" class="menu-button">
                                 <i class="mr-2 fas fa-user-plus"></i> Register
                             </a>
                         @endauth
@@ -113,17 +342,16 @@
             </div>
 
             <div class="flex-1 p-8">
-                <div class="p-6 bg-white rounded-lg shadow-lg">
+                <div class="p-6 rounded-lg shadow-lg" style="background-color: var(--bg-primary);">
                     <div id="calendar"></div>
 
-                    <main class="container"  >
+                    <main class="container">
                         {{ $slot }}
                     </main>
 
                 </div>
-
-                </div>
             </div>
-            </body>
-
-            </html>
+        </div>
+    </div>
+</body>
+</html>

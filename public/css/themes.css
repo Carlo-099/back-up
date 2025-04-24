@@ -1,0 +1,112 @@
+/* Theme Variables */
+:root {
+    /* Light Theme (Default) */
+    --primary-color: #9FB3DF;
+    --secondary-color: #9EC6F3;
+    --accent-color: #BDDDE4;
+    --background-color: #FFF1D5;
+    --text-color: #333333;
+    --sidebar-bg: #9FB3DF;
+    --sidebar-text: #333333;
+    --card-bg: #FFFFFF;
+    --card-border: #9EC6F3;
+    --nav-bg: #9EC6F3;
+    --nav-text: #333333;
+    --hover-bg: #BDDDE4;
+    --bg-primary: #ffffff;
+    --bg-secondary: #077A7D;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --hover-color: #e9ecef;
+
+    /* Light Theme (my second option) */
+
+    --topnavbar-bg: #9FB3DF;
+    --sidenavbar-bg: #9EC6F3;
+    --menubutton-bg:#BDDDE4;
+    --menubuttonhover-bg: #ffffff;
+
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --primary-color: #222831;
+    --secondary-color: #31363F;
+    --accent-color: #76ABAE;
+    --background-color: #EEEEEE;
+    --text-color: #EEEEEE;
+    --sidebar-bg: #222831;
+    --sidebar-text: #EEEEEE;
+    --card-bg: #31363F;
+    --card-border: #76ABAE;
+    --nav-bg: #222831;
+    --nav-text: #EEEEEE;
+    --hover-bg: #76ABAE;
+
+
+     /*dark theme my second option*/
+
+    --dark-topnavbar-bg: #9FB3DF;
+    --dark-sidenavbar-bg: #9EC6F3;
+    --dark-menubutton-bg:#BDDDE4;
+    --dark-menubuttonhover-bg: #ffffff;
+
+}
+
+/* Apply theme variables to elements */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Navigation */
+nav.bg-white {
+    background-color: var(--nav-bg) !important;
+}
+
+nav .text-gray-800, nav .text-gray-700 {
+    color: var(--nav-text) !important;
+}
+
+/* Sidebar */
+.bg-white.shadow-md {
+    background-color: var(--sidebar-bg) !important;
+}
+
+.bg-white.shadow-md .text-gray-800,
+.bg-white.shadow-md .text-gray-700 {
+    color: var(--sidebar-text) !important;
+}
+
+.bg-white.shadow-md .hover\:bg-gray-100:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Cards and content areas */
+.bg-white.rounded-lg {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border);
+}
+
+/* Buttons */
+.btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+/* Form elements */
+input, select, textarea {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+/* Links */
+a {
+    color: var(--accent-color);
+}
+
+a:hover {
+    color: var(--primary-color);
+}

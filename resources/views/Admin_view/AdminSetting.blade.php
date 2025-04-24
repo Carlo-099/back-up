@@ -3,8 +3,8 @@
             <!-- Main Content -->
 
                     <div class="flex-1 p-8">
-                        <div class="p-6 bg-white rounded-lg shadow-lg">
-                            <h2 class="mb-6 text-xl font-semibold text-gray-800">Admin Settings</h2>
+                        <div class="p-6 rounded-lg shadow-lg" style="background-color: var(--bg-primary);">
+                            <h2 class="mb-6 text-xl font-semibold" style="color: var(--text-primary);">Admin Settings</h2>
 
                             @if(session('success'))
                                 <div class="p-4 mb-4 text-green-700 bg-green-100 rounded-md">
@@ -33,25 +33,25 @@
                                 <div class="space-y-4">
                                     <!-- Change Email -->
                                     <div>
-                                        <label class="block text-gray-700">Change Email:</label>
+                                        <label class="block" style="color: var(--text-primary);">Change Email:</label>
                                         <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md" value="{{ $settings->change_email ?? '' }}">
                                     </div>
 
                                     <!-- Change Password -->
                                     <div>
-                                        <label class="block text-gray-700">Change Password:</label>
+                                        <label class="block" style="color: var(--text-primary);">Change Password:</label>
                                         <input type="password" name="change_password" placeholder="Enter new password" class="w-full p-2 mt-1 border rounded-md">
                                     </div>
 
                                     <!-- Change Profile Picture -->
                                     <div>
-                                        <label class="block text-gray-700">Change Profile Picture:</label>
+                                        <label class="block" style="color: var(--text-primary);">Change Profile Picture:</label>
                                         <input type="file" name="profile_picture" class="w-full p-2 mt-1 border rounded-md">
                                     </div>
 
                                     <!-- Dark / Light Mode -->
                                     <div>
-                                        <label class="block text-gray-700">Theme:</label>
+                                        <label class="block" style="color: var(--text-primary);">Theme:</label>
                                         <select name="theme" class="w-full p-2 mt-1 border rounded-md">
                                             <option value="light" {{ ($settings->theme ?? '') == 'light' ? 'selected' : '' }}>Light Mode</option>
                                             <option value="dark" {{ ($settings->theme ?? '') == 'dark' ? 'selected' : '' }}>Dark Mode</option>
@@ -60,7 +60,7 @@
 
                                     <!-- Notifications -->
                                     <div>
-                                        <label class="block text-gray-700">Notifications:</label>
+                                        <label class="block" style="color: var(--text-primary);">Notifications:</label>
                                         <select name="notification" class="w-full p-2 mt-1 border rounded-md">
                                             <option value="1" {{ ($settings->notification ?? false) ? 'selected' : '' }}>Turn On</option>
                                             <option value="0" {{ ($settings->notification ?? false) ? '' : 'selected' }}>Turn Off</option>
@@ -96,6 +96,27 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('admin-settings-form');
+            const themeSelect = document.querySelector('select[name="theme"]');
+
+            // Add event listener to theme select
+            if (themeSelect) {
+                themeSelect.addEventListener('change', function() {
+                    const selectedTheme = this.value;
+                    document.documentElement.setAttribute('data-theme', selectedTheme);
+
+                    // Save theme preference to localStorage for immediate effect
+                    localStorage.setItem('theme', selectedTheme);
+                });
+            }
+
+            // Check for theme in localStorage on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                if (themeSelect) {
+                    themeSelect.value = savedTheme;
+                }
+            }
 
             if (form) {
                 console.log('Admin settings form found:', form);
@@ -129,6 +150,16 @@
             if (restoreButton) {
                 restoreButton.addEventListener('click', function(e) {
                     console.log('Admin restore button clicked');
+
+                    // Reset theme to the server-side default
+                    const serverTheme = document.documentElement.getAttribute('data-theme');
+                    if (serverTheme) {
+                        document.documentElement.setAttribute('data-theme', serverTheme);
+                        localStorage.setItem('theme', serverTheme);
+                        if (themeSelect) {
+                            themeSelect.value = serverTheme;
+                        }
+                    }
                 });
             }
         });

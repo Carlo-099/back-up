@@ -101,6 +101,7 @@
             const form = document.getElementById('settings-form');
             const currentPasswordInput = document.querySelector('input[name="current_password"]');
             const changePasswordInput = document.querySelector('input[name="change_password"]');
+            const themeSelect = document.querySelector('select[name="theme"]');
 
             // Initially disable the change password field
             if (changePasswordInput) {
@@ -117,6 +118,26 @@
                         changePasswordInput.placeholder = "Enter new password";
                     }
                 });
+            }
+
+            // Add event listener to theme select
+            if (themeSelect) {
+                themeSelect.addEventListener('change', function() {
+                    const selectedTheme = this.value;
+                    document.documentElement.setAttribute('data-theme', selectedTheme);
+
+                    // Save theme preference to localStorage for immediate effect
+                    localStorage.setItem('theme', selectedTheme);
+                });
+            }
+
+            // Check for theme in localStorage on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                if (themeSelect) {
+                    themeSelect.value = savedTheme;
+                }
             }
 
             if (form) {
@@ -154,6 +175,16 @@
             if (restoreButton) {
                 restoreButton.addEventListener('click', function(e) {
                     console.log('Restore button clicked');
+
+                    // Reset theme to the server-side default
+                    const serverTheme = document.documentElement.getAttribute('data-theme');
+                    if (serverTheme) {
+                        document.documentElement.setAttribute('data-theme', serverTheme);
+                        localStorage.setItem('theme', serverTheme);
+                        if (themeSelect) {
+                            themeSelect.value = serverTheme;
+                        }
+                    }
                 });
             }
         });
