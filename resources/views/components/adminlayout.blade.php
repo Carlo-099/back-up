@@ -181,13 +181,15 @@
         observer.observe(document.documentElement, { attributes: true });
     </script>
 </head>
-
+<body>
     <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- Top Navigation Bar -->
+
         <nav class="shadow-md" style="background-color: var(--topnavbar-bg);">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
+
                         <!-- Logo -->
                         <div class="flex items-center">
                             <a href="/" class="flex items-center">
@@ -201,6 +203,7 @@
                     <div class="flex items-center space-x-4">
                         @auth
                             <span style="color: var(--text-primary);">Hi, {{ Auth::user()->name }}</span>
+
                             <!-- Notification Button -->
                             <button class="relative p-2 rounded-full" style="color: var(--text-primary);">
                                 <i class="fas fa-bell"></i>
@@ -251,26 +254,26 @@
                     <h2 class="mb-4 text-lg font-semibold" style="color: var(--text-primary);">Menu</h2>
                     <nav class="space-y-2">
                         @auth
-                            <a href="{{ route('user-manage') }}" class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href="{{ route('user-manage') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-users-cog"></i> Manage User
                             </a>
-                            <a href="{{ route('send-announcement') }}" class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href="{{ route('send-announcement') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-bullhorn"></i> User Announcement
                             </a>
-                            <a href="{{ route('read-feedback') }}" class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href="{{ route('read-feedback') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-comments"></i> Read Feedbacks
                             </a>
 
                             <hr class="my-4" style="border-color: var(--border-color);">
 
-                            <a href={{ route('AdminSetting') }} class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href={{ route('AdminSetting') }} class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-cog"></i> Settings
                             </a>
                         @else
-                            <a href="{{ route('show.login') }}" class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href="{{ route('show.login') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-sign-in-alt"></i> Login
                             </a>
-                            <a href="{{ route('show.register') }}" class="block px-4 py-2 menu-item rounded-md hover:bg-gray-100">
+                            <a href="{{ route('show.register') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
                                 <i class="mr-2 fas fa-user-plus"></i> Register
                             </a>
                         @endauth

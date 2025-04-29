@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Smart to do list</title>
+    <title>Smart to do lists</title>
 
     @vite('resources/css/app.css')
     <!-- Theme CSS -->
@@ -168,6 +167,11 @@
             border-color: var(--border-color);
             color: var(--text-primary);
         }
+
+        .task-read {
+            background-color: #f8f9fa; /* Light gray for read tasks */
+            color: #6c757d; /* Gray text */
+}
     </style>
     <script>
         // Function to apply theme to menu buttons
@@ -223,6 +227,23 @@
             applyThemeToMenuButtons();
         }
 
+        // Function to hide deleted notifications
+        function hideDeletedNotifications() {
+            // Get deleted task IDs from localStorage
+            const deletedTaskIds = JSON.parse(localStorage.getItem('deletedTaskIds') || '[]');
+
+            // Hide notifications for deleted tasks
+            deletedTaskIds.forEach(taskId => {
+                const notificationItem = document.querySelector(`.notification-item[data-task-id="${taskId}"]`);
+                if (notificationItem) {
+                    notificationItem.style.display = 'none';
+                }
+            });
+
+
+        }
+
+
         // Run on page load
         document.addEventListener('DOMContentLoaded', applyTheme);
 
@@ -230,7 +251,7 @@
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'data-theme') {
-                    applyThemeToMenuButtons();
+                    // Theme changed, no additional action needed
                 }
             });
         });
@@ -238,13 +259,16 @@
         observer.observe(document.documentElement, { attributes: true });
     </script>
 </head>
+
 <body>
     <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- Top Navigation Bar -->
+
         <nav class="shadow-md" style="background-color: var(--topnavbar-bg);">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
+
                         <!-- Logo -->
                         <div class="flex items-center">
                             <a href="/" class="flex items-center">
@@ -258,17 +282,62 @@
                     <div class="flex items-center space-x-4">
                         @auth
                             <span style="color: var(--text-primary);">Hi, {{ Auth::user()->name }}</span>
-                            <!-- Notification Button -->
-                            <button class="relative p-2 rounded-full" style="color: var(--text-primary);">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-                            </button>
+
+                          <!-- Notification Button -->
+                            <div class="relative">
+                                <button id="notificationButton" class="relative p-2 rounded-full" style="color: var(--text-primary);">
+                                    <i class="fas fa-bell"></i>
+                                    @php
+                                        $hasUnreadNotifications = \App\Models\Notification::where('user_id', Auth::id())
+                                            ->where('status', 'unread')
+                                            ->exists();
+                                    @endphp
+                                    @if ($hasUnreadNotifications)
+                                        <span id="notificationDot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                                    @endif
+                                </button>
+
+                                <!-- Notification Dropdown -->
+                                <div id="notificationDropdown" class="absolute right-0 z-50 hidden w-64 mt-2 overflow-hidden bg-white rounded-lg shadow-lg" style="background-color: var(--bg-primary); border: 1px solid var(--border-color);">
+                                    <div class="p-4">
+                                        <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Tasks Due Today</h3>
+                                    </div>
+                                    <ul class="divide-y divide-gray-200" style="border-color: var(--border-color);">
+                                        @php
+                                            $tasks = \App\Models\Task::with('category')
+                                                ->where('user_id', Auth::id())
+                                                ->whereDate('due_date', now()->toDateString())
+                                                ->get();
+                                        @endphp
+
+                                        @forelse ($tasks as $task)
+                                            <li id="task-{{ $task->task_id }}" class="flex items-center justify-between p-4">
+                                                <div>
+                                                    <h4 class="text-sm font-medium" style="color: var(--text-primary);">{{ $task->title }}</h4>
+                                                    <p class="text-xs" style="color: var(--text-secondary);">Status: {{ $task->status }}</p>
+                                                    <p class="text-xs" style="color: var(--text-secondary);">Category: {{ $task->category->category_type }}</p>
+                                                    <p class="text-xs" style="color: var(--text-secondary);">Due: {{ $task->due_date->format('d M Y') }}</p>
+                                                </div>
+                                                <button class="text-xs font-semibold text-blue-500 mark-as-read-btn hover:underline" data-task-id="{{ $task->task_id }}">
+                                                    Mark as Read
+                                                </button>
+                                            </li>
+                                        @empty
+                                            <li class="p-4 text-sm" style="color: var(--text-secondary);">No tasks due today.</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div> <!-- Missing closing tag added here -->
+
                             <form action="{{ route('logout') }}" method="POST" class="m-0">
                                 @csrf
                                 <button class="btn">Logout</button>
                             </form>
                         @endauth
                     </div>
+
+
+
                 </div>
             </div>
         </nav>
@@ -353,5 +422,50 @@
             </div>
         </div>
     </div>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const notificationButton = document.getElementById('notificationButton');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationDot = document.getElementById('notificationDot');
+    const markAsReadButtons = document.querySelectorAll('.mark-as-read-btn');
+
+    // Toggle dropdown and hide red dot
+    notificationButton.addEventListener('click', function () {
+        notificationDropdown.classList.toggle('hidden');
+        if (notificationDot) {
+            notificationDot.style.display = 'none'; // Hide the red dot
+        }
+    });
+
+    // Mark task as read
+    markAsReadButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const taskId = button.dataset.taskId;
+
+            // Send AJAX request to mark the task as read
+            fetch(`/notifications/mark-as-read/${taskId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mark the task as read in the UI
+                        const taskElement = document.getElementById(`task-${taskId}`);
+                        taskElement.classList.add('task-read');
+                        button.disabled = true;
+                        button.textContent = 'Read';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+});
+ </script>
+
 </body>
 </html>

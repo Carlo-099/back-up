@@ -61,6 +61,8 @@ Route::get('/read-feedback', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+
+
 //THIS PART IS FOR THE LOGIN, REGISTER, AND WELCOME PAGE
 Route::middleware('guest')->controller(AuthController::class)->group(function (){
     Route::get('/register', 'showRegister')->name('show.register');
@@ -82,3 +84,5 @@ Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update
 Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 
+// Notification-related route
+Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');

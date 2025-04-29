@@ -8,9 +8,32 @@ use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Notification;
 
 class TaskController extends Controller
 {
+
+    public function markAsRead($taskId)
+    {
+        try {
+            $task = Task::findOrFail($taskId);
+
+            // Check if the user owns this task
+            if ($task->user_id !== Auth::id()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            }
+
+            // Update the notification status
+            $notification = Notification::updateOrCreate(
+                ['user_id' => Auth::id(), 'task_id' => $taskId],
+                ['status' => 'read']
+            );
+
+            return response()->json(['success' => true, 'message' => 'Notification marked as read']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error marking notification as read'], 500);
+        }
+    }
     public function index()
     {
         try {
