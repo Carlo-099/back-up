@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart to do lists</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Smart to do list</title>
 
     @vite('resources/css/app.css')
     <!-- Theme CSS -->
@@ -167,13 +168,8 @@
             border-color: var(--border-color);
             color: var(--text-primary);
         }
-
-        .task-read {
-            background-color: #f8f9fa; /* Light gray for read tasks */
-            color: #6c757d; /* Gray text */
-}
     </style>
-    <script>
+     <script>
         // Function to apply theme to menu buttons
         function applyThemeToMenuButtons() {
             const theme = document.documentElement.getAttribute('data-theme');
@@ -234,7 +230,7 @@
 
             // Hide notifications for deleted tasks
             deletedTaskIds.forEach(taskId => {
-                const notificationItem = document.querySelector(`.notification-item[data-task-id="${taskId}"]`);
+                const notificationItem = document.querySelector(.notification-item[data-task-id="${taskId}"]);
                 if (notificationItem) {
                     notificationItem.style.display = 'none';
                 }
@@ -259,11 +255,9 @@
         observer.observe(document.documentElement, { attributes: true });
     </script>
 </head>
-
 <body>
     <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- Top Navigation Bar -->
-
         <nav class="shadow-md" style="background-color: var(--topnavbar-bg);">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
@@ -318,9 +312,12 @@
                                                     <p class="text-xs" style="color: var(--text-secondary);">Category: {{ $task->category->category_type }}</p>
                                                     <p class="text-xs" style="color: var(--text-secondary);">Due: {{ $task->due_date->format('d M Y') }}</p>
                                                 </div>
+
+                                                <!-- Mark as Read Button -->
                                                 <button class="text-xs font-semibold text-blue-500 mark-as-read-btn hover:underline" data-task-id="{{ $task->task_id }}">
                                                     Mark as Read
                                                 </button>
+
                                             </li>
                                         @empty
                                             <li class="p-4 text-sm" style="color: var(--text-secondary);">No tasks due today.</li>
@@ -335,8 +332,6 @@
                             </form>
                         @endauth
                     </div>
-
-
 
                 </div>
             </div>
@@ -423,8 +418,8 @@
         </div>
     </div>
 
- <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
     const notificationButton = document.getElementById('notificationButton');
     const notificationDropdown = document.getElementById('notificationDropdown');
     const notificationDot = document.getElementById('notificationDot');
@@ -432,7 +427,9 @@
 
     // Toggle dropdown and hide red dot
     notificationButton.addEventListener('click', function () {
-        notificationDropdown.classList.toggle('hidden');
+        if (notificationDropdown) {
+            notificationDropdown.classList.toggle('hidden');
+        }
         if (notificationDot) {
             notificationDot.style.display = 'none'; // Hide the red dot
         }
@@ -456,7 +453,9 @@
                     if (data.success) {
                         // Mark the task as read in the UI
                         const taskElement = document.getElementById(`task-${taskId}`);
-                        taskElement.classList.add('task-read');
+                        if (taskElement) {
+                            taskElement.classList.add('task-read');
+                        }
                         button.disabled = true;
                         button.textContent = 'Read';
                     }
@@ -465,7 +464,12 @@
         });
     });
 });
- </script>
+     </script>
+
+
+
+
+
 
 </body>
 </html>

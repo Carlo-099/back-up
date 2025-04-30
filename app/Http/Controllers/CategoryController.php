@@ -15,4 +15,6 @@ class CategoryController extends Controller
             ->get();
         return view('User_view.Category', compact('tasks'));
     }
+
 }
+

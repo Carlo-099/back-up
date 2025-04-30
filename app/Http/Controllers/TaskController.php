@@ -13,6 +13,7 @@ use App\Models\Notification;
 class TaskController extends Controller
 {
 
+
     public function markAsRead($taskId)
     {
         try {
@@ -127,6 +128,8 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
+
+
         try {
             $request->validate([
                 'title' => 'required|string|max:255',

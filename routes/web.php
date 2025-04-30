@@ -8,6 +8,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\CategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -86,3 +88,4 @@ Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 
 // Notification-related route
 Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');
+
