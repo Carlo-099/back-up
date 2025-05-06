@@ -9,6 +9,7 @@ use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FeedbackController;
 
 
 /*
@@ -32,9 +33,14 @@ Route::get('/status', [StatusController::class, 'index'])->name('status')->middl
 
 Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category')->middleware('auth');
 
-Route::get('/feedback', function () {
-    return view('User_view.Feedback');
-})->name('feedback')->middleware('auth');
+Route::get('/category', [CategoryController::class, 'index'])->name('category')->middleware('auth');
+
+// Feedback Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    Route::post('/feedback/{feedbackId}/reply', [FeedbackController::class, 'reply'])->name('feedback.reply');
+});
 
 Route::get('/productivity-insight', function () {
     return view('User_view.Productivity_insight');
@@ -56,9 +62,7 @@ Route::get('/send-announcement', function () {
     return view('Admin_view.SendAnnouncement');
 })->name('send-announcement')->middleware('auth');
 
-Route::get('/read-feedback', function () {
-    return view('Admin_view.ReadFeedback');
-})->name('read-feedback')->middleware('auth');
+Route::get('/read-feedback', [FeedbackController::class, 'adminIndex'])->name('read-feedback')->middleware('auth');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

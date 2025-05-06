@@ -74,7 +74,7 @@
                             <select name="status" id="status" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
                                 <option value="pending">Pending</option>
                                 <option value="in_progress">In Progress</option>
-                                <option value="complete">Complete</option>
+                                {{-- <option value="complete">Complete</option> --}}
                             </select>
                         </div>
                         <div class="mb-4">

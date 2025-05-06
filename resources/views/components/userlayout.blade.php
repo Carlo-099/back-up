@@ -305,23 +305,33 @@
                                         @endphp
 
                                         @forelse ($tasks as $task)
-                                            <li id="task-{{ $task->task_id }}" class="flex items-center justify-between p-4">
-                                                <div>
-                                                    <h4 class="text-sm font-medium" style="color: var(--text-primary);">{{ $task->title }}</h4>
-                                                    <p class="text-xs" style="color: var(--text-secondary);">Status: {{ $task->status }}</p>
-                                                    <p class="text-xs" style="color: var(--text-secondary);">Category: {{ $task->category->category_type }}</p>
-                                                    <p class="text-xs" style="color: var(--text-secondary);">Due: {{ $task->due_date->format('d M Y') }}</p>
-                                                </div>
+                                        <li id="task-{{ $task->task_id }}" class="flex items-center justify-between p-4">
+                                            <div>
+                                                <h4 class="text-sm font-medium" style="color: var(--text-primary);">{{ $task->title }}</h4>
+                                                <p class="text-xs" style="color: var(--text-secondary);">Status: {{ $task->status }}</p>
+                                                <p class="text-xs" style="color: var(--text-secondary);">Category: {{ $task->category->category_type }}</p>
+                                                <p class="text-xs" style="color: var(--text-secondary);">Due: {{ $task->due_date->format('d M Y') }}</p>
+                                            </div>
 
-                                                <!-- Mark as Read Button -->
-                                                <button class="text-xs font-semibold text-blue-500 mark-as-read-btn hover:underline" data-task-id="{{ $task->task_id }}">
-                                                    Mark as Read
-                                                </button>
-
-                                            </li>
+                                            <!-- Mark as Read Button -->
+                                            <button class="text-xs font-semibold text-blue-500 mark-as-read-btn hover:underline" data-task-id="{{ $task->task_id }}">
+                                                Mark as Read
+                                            </button>
+                                        </li>
                                         @empty
-                                            <li class="p-4 text-sm" style="color: var(--text-secondary);">No tasks due today.</li>
+                                        <li class="p-4 text-sm" style="color: var(--text-secondary);">No tasks due today.</li>
                                         @endforelse
+
+                                        <!-- Modal -->
+                                        <div id="taskModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+                                        <div class="p-6 bg-white rounded-lg shadow-lg w-96">
+                                            <h3 class="mb-4 text-lg font-semibold text-gray-800">Set as Complete Task </h3>
+                                            <div class="flex justify-end space-x-4">
+                                                <button id="viewTaskButton" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">View</button>
+                                                <button id="closeModalButton" class="px-4 py-2 text-gray-800 bg-gray-300 rounded hover:bg-gray-400">No</button>
+                                            </div>
+                                        </div>
+                                        </div>
                                     </ul>
                                 </div>
                             </div> <!-- Missing closing tag added here -->
@@ -467,7 +477,46 @@
      </script>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const markAsReadButtons = document.querySelectorAll('.mark-as-read-btn');
+    const modal = document.getElementById('taskModal');
+    const viewTaskButton = document.getElementById('viewTaskButton');
+    const closeModalButton = document.getElementById('closeModalButton');
+    let currentTaskId = null;
 
+    // Open modal when "Mark as Read" is clicked
+    markAsReadButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            currentTaskId = button.dataset.taskId;
+
+            // Show the modal
+            modal.classList.remove('hidden');
+        });
+    });
+
+    // Redirect to /category when "View" is clicked
+    viewTaskButton.addEventListener('click', function () {
+        if (currentTaskId) {
+            window.location.href = `/category`;
+        }
+    });
+
+    // Close the modal when "No" is clicked
+    closeModalButton.addEventListener('click', function () {
+        modal.classList.add('hidden');
+        currentTaskId = null;
+    });
+
+    // Close the modal when clicking outside of it
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+            currentTaskId = null;
+        }
+    });
+});
+</script>
 
 
 

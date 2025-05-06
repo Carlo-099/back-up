@@ -8,13 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+
     public function index()
-    {
-        $tasks = Task::with('category')
-            ->where('user_id', Auth::id())
-            ->get();
-        return view('User_view.Category', compact('tasks'));
-    }
+{
+    $tasks = Task::with('category')
+        ->where('user_id', Auth::id()) // Restrict access to the authenticated user's tasks
+        ->get();
+
+    return view('User_view.Category', compact('tasks'));
+}
+
+
 
 }
 
