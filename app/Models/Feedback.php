@@ -16,6 +16,7 @@ class Feedback extends Model
         'title',
         'message',
         'admin_response',
+        'is_read',
         'date_sent'
     ];
 
@@ -23,6 +24,7 @@ class Feedback extends Model
         'date_sent' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_read' => 'boolean'
     ];
 
     public function user()

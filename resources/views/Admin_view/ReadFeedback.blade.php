@@ -15,7 +15,7 @@
             @endif
 
             <!-- Feedback Cards Container -->
-            <div class="grid gap-6">
+            <div class="grid gap-6 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
                 @forelse($feedbacks as $feedback)
                     <div class="transition-shadow duration-200 bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md">
                         <div class="p-6">

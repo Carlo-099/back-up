@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::post('/feedback/{feedbackId}/reply', [FeedbackController::class, 'reply'])->name('feedback.reply');
+    Route::post('/feedback/mark-as-read/{feedbackId}', [FeedbackController::class, 'markAsRead'])->name('feedback.mark-as-read');
 });
 
 Route::get('/productivity-insight', function () {

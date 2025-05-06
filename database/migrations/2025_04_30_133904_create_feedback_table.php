@@ -18,6 +18,7 @@ class CreateFeedbackTable extends Migration
             $table->string('title'); // Title column to store the latest logged user_id title
             $table->string('message'); // Message to admin
             $table->string('admin_response')->nullable(); // Admin response (nullable)
+            $table->boolean('is_read')->default(false); // Track if the response has been read
             $table->timestamp('date_sent')->useCurrent(); // Date sent
             $table->timestamps(); // Laravel's created_at and updated_at
 

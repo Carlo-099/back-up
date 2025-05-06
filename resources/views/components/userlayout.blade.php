@@ -168,6 +168,279 @@
             border-color: var(--border-color);
             color: var(--text-primary);
         }
+
+        /* Material Design Notification Styles */
+        .notification-dropdown {
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-top: 8px;
+            background: var(--bg-primary);
+            position: absolute;
+            right: 0;
+            top: 100%;
+            z-index: 1000;
+        }
+
+        .notification-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .notification-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .notification-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(var(--accent-color-rgb), 0.05);
+        }
+
+        .notification-content {
+            flex-grow: 1;
+            min-width: 0;
+            margin-right: 12px;
+        }
+
+        .notification-text {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .notification-status {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-progress {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-overdue {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-empty {
+            padding: 32px 16px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Custom Scrollbar */
+        .notification-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Navbar Notification Icon */
+        .nav-link .fa-bell {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            transition: transform 0.2s;
+        }
+
+        .nav-link:hover .fa-bell {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* View Button */
+        .view-button {
+            padding: 6px 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .view-button:hover {
+            background-color: var(--accent-color-dark, #0056b3);
+        }
+
+        /* Notification Types */
+        .notification-icon.task {
+            background-color: #2196f3;
+        }
+
+        .notification-icon.comment {
+            background-color: #4caf50;
+        }
+
+        .notification-icon.deadline {
+            background-color: #ff9800;
+        }
+
+        .notification-icon.mention {
+            background-color: #9c27b0;
+        }
+
+        /* Modal Styles */
+        .task-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-modal-content {
+            background-color: var(--bg-primary);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .task-modal-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .task-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .task-modal-button {
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-modal-button.yes {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .task-modal-button.yes:hover {
+            background-color: var(--accent-color-dark, #0056b3);
+        }
+
+        .task-modal-button.no {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .task-modal-button.no:hover {
+            background-color: var(--hover-color);
+        }
+
+        .notification-body {
+            max-height: 20rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #8CB4E2 #f1f1f1;
+        }
+        .notification-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .notification-body::-webkit-scrollbar-thumb {
+            background: #8CB4E2;
+            border-radius: 3px;
+        }
+        .notification-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
     </style>
      <script>
         // Function to apply theme to menu buttons
@@ -287,54 +560,79 @@
                                             ->exists();
                                     @endphp
                                     @if ($hasUnreadNotifications)
-                                        <span id="notificationDot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                                        <span class="notification-badge">3</span>
                                     @endif
                                 </button>
 
                                 <!-- Notification Dropdown -->
-                                <div id="notificationDropdown" class="absolute right-0 z-50 hidden w-64 mt-2 overflow-hidden bg-white rounded-lg shadow-lg" style="background-color: var(--bg-primary); border: 1px solid var(--border-color);">
-                                    <div class="p-4">
-                                        <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Tasks Due Today</h3>
+                                <div id="notificationDropdown" class="notification-dropdown hidden">
+                                    <div class="notification-header">
+                                        <h6 class="notification-title">Notifications</h6>
                                     </div>
-                                    <ul class="divide-y divide-gray-200" style="border-color: var(--border-color);">
+
+                                    <div class="notification-body">
                                         @php
                                             $tasks = \App\Models\Task::with('category')
                                                 ->where('user_id', Auth::id())
                                                 ->whereDate('due_date', now()->toDateString())
                                                 ->get();
+                                            $feedbackNotifications = \App\Models\Feedback::where('user_id', Auth::id())
+                                                ->whereNotNull('admin_response')
+                                                ->orderBy('updated_at', 'desc')
+                                                ->get();
                                         @endphp
 
-                                        @forelse ($tasks as $task)
-                                        <li id="task-{{ $task->task_id }}" class="flex items-center justify-between p-4">
-                                            <div>
-                                                <h4 class="text-sm font-medium" style="color: var(--text-primary);">{{ $task->title }}</h4>
-                                                <p class="text-xs" style="color: var(--text-secondary);">Status: {{ $task->status }}</p>
-                                                <p class="text-xs" style="color: var(--text-secondary);">Category: {{ $task->category->category_type }}</p>
-                                                <p class="text-xs" style="color: var(--text-secondary);">Due: {{ $task->due_date->format('d M Y') }}</p>
+                                        <!-- Admin Response Notifications -->
+                                        @forelse ($feedbackNotifications as $feedback)
+                                            <div class="notification-item {{ $feedback->is_read ? '' : 'unread bg-blue-50' }}" data-feedback-id="{{ $feedback->feedback_id }}">
+                                                <div class="notification-content flex items-center">
+                                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-right:10px;">
+                                                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                                        <circle cx="9" cy="8" r="4" fill="#8CB4E2"/>
+                                                        <path d="M9 14c-3.5 0-6 1.5-6 3.5V20h9.5a5.5 5.5 0 0 1 5.5-5.5c.34 0 .67.03 1 .08V17a2 2 0 0 0 2 2h1v-1.5c0-2-2.5-3.5-6-3.5z" fill="#4A6FA5"/>
+                                                        <circle cx="18.5" cy="18.5" r="2.5" fill="#4A6FA5"/>
+                                                        <path d="M18.5 16v-1M18.5 21v-1M21 18.5h-1M16 18.5h-1M20.07 16.93l-.71.71M16.93 20.07l-.71.71M20.07 20.07l-.71-.71M16.93 16.93l-.71-.71" stroke="#fff" stroke-width="1"/>
+                                                      </svg>
+                                                    </span>
+                                                    <div>
+                                                        <span class="font-semibold">From Admin</span>
+                                                        @if(!$feedback->is_read)
+                                                            <span class="ml-2 inline-block px-2 py-0.5 text-xs font-bold text-white bg-blue-500 rounded-full align-middle">New</span>
+                                                        @endif
+                                                        <br>
+                                                        <span class="notification-time">{{ $feedback->updated_at->format('d M Y H:i') }}</span>
+                                                    </div>
+                                                </div>
+                                                <button class="view-button" data-feedback-id="{{ $feedback->feedback_id }}">View</button>
                                             </div>
-
-                                            <!-- Mark as Read Button -->
-                                            <button class="text-xs font-semibold text-blue-500 mark-as-read-btn hover:underline" data-task-id="{{ $task->task_id }}">
-                                                Mark as Read
-                                            </button>
-                                        </li>
                                         @empty
-                                        <li class="p-4 text-sm" style="color: var(--text-secondary);">No tasks due today.</li>
+                                            <div class="notification-empty">
+                                                <p>No new responses</p>
+                                            </div>
                                         @endforelse
 
-                                        <!-- Modal -->
-                                        <div id="taskModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
-                                        <div class="p-6 bg-white rounded-lg shadow-lg w-96">
-                                            <h3 class="mb-4 text-lg font-semibold text-gray-800">Set as Complete Task </h3>
-                                            <div class="flex justify-end space-x-4">
-                                                <button id="viewTaskButton" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">View</button>
-                                                <button id="closeModalButton" class="px-4 py-2 text-gray-800 bg-gray-300 rounded hover:bg-gray-400">No</button>
+                                        <!-- Task Notifications -->
+                                        @forelse ($tasks as $task)
+                                            <div class="notification-item unread" data-task-id="{{ $task->task_id }}">
+                                                <div class="notification-content">
+                                                    <p class="notification-text">{{ $task->title }}</p>
+                                                    <span class="notification-time">Due: {{ $task->due_date->format('d M Y') }}</span>
+                                                    <span class="notification-status status-{{ strtolower(str_replace(' ', '-', $task->status)) }}">
+                                                        {{ $task->status }}
+                                                    </span>
+                                                </div>
+                                                <button class="view-button" data-task-id="{{ $task->task_id }}">View</button>
                                             </div>
-                                        </div>
-                                        </div>
-                                    </ul>
+                                        @empty
+                                            @if($feedbackNotifications->isEmpty())
+                                                <div class="notification-empty">
+                                                    <p>No new notifications</p>
+                                                </div>
+                                            @endif
+                                        @endforelse
+                                    </div>
                                 </div>
-                            </div> <!-- Missing closing tag added here -->
+                            </div>
 
                             <form action="{{ route('logout') }}" method="POST" class="m-0">
                                 @csrf
@@ -478,47 +776,184 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const markAsReadButtons = document.querySelectorAll('.mark-as-read-btn');
-    const modal = document.getElementById('taskModal');
-    const viewTaskButton = document.getElementById('viewTaskButton');
-    const closeModalButton = document.getElementById('closeModalButton');
-    let currentTaskId = null;
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('taskModal');
+        const confirmButton = document.getElementById('confirmTask');
+        const cancelButton = document.getElementById('cancelTask');
+        let currentTaskId = null;
+        let currentFeedbackId = null;
 
-    // Open modal when "Mark as Read" is clicked
-    markAsReadButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            currentTaskId = button.dataset.taskId;
+        // Admin Response Modal
+        const adminModal = document.getElementById('adminResponseModal');
+        const adminModalContent = document.getElementById('adminResponseModalContent');
 
-            // Show the modal
-            modal.classList.remove('hidden');
+        // Add click event listeners to all view buttons
+        document.querySelectorAll('.view-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.dataset.taskId) {
+                    currentTaskId = this.dataset.taskId;
+                    currentFeedbackId = null;
+                    modal.style.display = 'flex';
+                    // Mark the task as read
+                    fetch(`/notifications/mark-as-read/${currentTaskId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove unread classes and badge dynamically
+                            const notifItem = document.querySelector(`.notification-item[data-task-id='${currentTaskId}']`);
+                            if (notifItem) {
+                                notifItem.classList.remove('unread', 'bg-blue-50');
+                                const badge = notifItem.querySelector('.bg-blue-500');
+                                if (badge) badge.remove();
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                } else if (this.dataset.feedbackId) {
+                    currentFeedbackId = this.dataset.feedbackId;
+                    currentTaskId = null;
+                    // Find feedback data from a JS object (injected below)
+                    const feedbackData = window.feedbackData.find(f => f.feedback_id == currentFeedbackId);
+                    if (feedbackData) {
+                        adminModalContent.innerHTML = `
+                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto flex flex-col justify-center items-stretch">
+                                <h3 class="task-modal-title text-xl font-bold text-center mb-4">
+                                    Admin Response Details
+                                </h3>
+                                <div class="space-y-4 text-justify">
+                                    <div>
+                                        <div class="text-xs text-gray-500 font-semibold uppercase text-center">Title</div>
+                                        <div class="font-medium text-gray-800 text-center">${feedbackData.title}</div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-green-500"><i class="fas fa-comment-alt"></i></span>
+                                        <div>
+                                            <div class="text-xs text-gray-500 font-semibold uppercase">Your Message</div>
+                                            <div class="text-gray-700">${feedbackData.message}</div>
+                                        </div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-indigo-500"><i class="fas fa-reply"></i></span>
+                                        <div>
+                                            <div class="text-xs text-gray-500 font-semibold uppercase">Admin's Response</div>
+                                            <div class="text-gray-700">${feedbackData.admin_response}</div>
+                                        </div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-gray-400"><i class="fas fa-clock"></i></span>
+                                        <div>
+                                            <div class="text-xs text-gray-500 font-semibold uppercase">Response received</div>
+                                            <div class="text-gray-600">${feedbackData.updated_at}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-modal-buttons mt-6 flex justify-center">
+                                    <button class="task-modal-button no bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded" id="closeAdminModal">Close</button>
+                                </div>
+                            </div>
+                        `;
+                        adminModal.style.display = 'flex';
+                        document.getElementById('closeAdminModal').onclick = function() {
+                            adminModal.style.display = 'none';
+                        };
+                    }
+                    // Mark the feedback as read
+                    fetch(`/feedback/mark-as-read/${currentFeedbackId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove unread classes and badge dynamically
+                            const notifItem = document.querySelector(`.notification-item[data-feedback-id='${currentFeedbackId}']`);
+                            if (notifItem) {
+                                notifItem.classList.remove('unread', 'bg-blue-50');
+                                const badge = notifItem.querySelector('.bg-blue-500');
+                                if (badge) badge.remove();
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+
+        // Handle Yes button click
+        confirmButton.addEventListener('click', function() {
+            if (currentTaskId) {
+                window.location.href = `/category?task=${currentTaskId}`;
+            }
+            modal.style.display = 'none';
+        });
+
+        // Handle No button click
+        cancelButton.addEventListener('click', function() {
+            modal.style.display = 'none';
+            currentTaskId = null;
+            currentFeedbackId = null;
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+            }
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                currentTaskId = null;
+                currentFeedbackId = null;
+            }
         });
     });
-
-    // Redirect to /category when "View" is clicked
-    viewTaskButton.addEventListener('click', function () {
-        if (currentTaskId) {
-            window.location.href = `/category`;
-        }
-    });
-
-    // Close the modal when "No" is clicked
-    closeModalButton.addEventListener('click', function () {
-        modal.classList.add('hidden');
-        currentTaskId = null;
-    });
-
-    // Close the modal when clicking outside of it
-    window.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            modal.classList.add('hidden');
-            currentTaskId = null;
-        }
-    });
-});
 </script>
 
+<!-- Add the modal HTML structure -->
+<div id="taskModal" class="task-modal">
+    <div class="task-modal-content">
+        <h3 class="task-modal-title">Set this activity as Completed?</h3>
+        <div class="task-modal-buttons">
+            <button class="task-modal-button yes" id="confirmTask">Yes</button>
+            <button class="task-modal-button no" id="cancelTask">No</button>
+        </div>
+    </div>
+</div>
 
+<!-- Admin Response Modal -->
+<div id="adminResponseModal" class="task-modal">
+    <div class="task-modal-content" id="adminResponseModalContent">
+        <!-- Content will be injected by JS -->
+    </div>
+</div>
+
+@php
+    $feedbackData = $feedbackNotifications->map(function($f) {
+        return [
+            'feedback_id' => $f->feedback_id,
+            'title' => $f->title,
+            'message' => $f->message,
+            'admin_response' => $f->admin_response,
+            'updated_at' => $f->updated_at->format('d M Y H:i'),
+        ];
+    })->values()->all();
+@endphp
+
+<script>
+window.feedbackData = @json($feedbackData);
+</script>
 
 </body>
 </html>

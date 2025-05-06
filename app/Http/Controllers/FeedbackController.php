@@ -97,4 +97,27 @@ class FeedbackController extends Controller
 
         return response()->json($feedback);
     }
+
+    public function markAsRead($feedbackId)
+    {
+        try {
+            $feedback = Feedback::where('feedback_id', $feedbackId)
+                ->where('user_id', Auth::id())
+                ->first();
+
+            if ($feedback) {
+                $feedback->is_read = true;
+                $feedback->save();
+                return response()->json(['success' => true]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Feedback not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('Error marking feedback as read', [
+                'error' => $e->getMessage(),
+                'feedback_id' => $feedbackId
+            ]);
+            return response()->json(['success' => false, 'message' => 'An error occurred'], 500);
+        }
+    }
 }
