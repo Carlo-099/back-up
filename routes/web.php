@@ -10,6 +10,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\UserManageController;
 
 
 /*
@@ -55,9 +56,12 @@ Route::get('/admin-setting', [AdminSettingController::class, 'index'])->name('Ad
 Route::post('/admin-setting', [AdminSettingController::class, 'update'])->name('admin.setting.update')->middleware('auth');
 
 //THIS PART IS THE ROUTES FOR THE ADMIN
-Route::get('/user-manage', function () {
-    return view('Admin_view.UserManage');
-})->name('user-manage')->middleware('auth');
+Route::get('/user-manage', [UserManageController::class, 'index'])->name('user-manage')->middleware('auth');
+
+// Add new routes for user information management
+Route::get('/user/{id}', [UserManageController::class, 'show'])->name('user.show')->middleware('auth');
+Route::put('/user/{id}', [UserManageController::class, 'update'])->name('user.update')->middleware('auth');
+Route::delete('/user/{id}', [UserManageController::class, 'destroy'])->name('user.destroy')->middleware('auth');
 
 Route::get('/send-announcement', function () {
     return view('Admin_view.SendAnnouncement');

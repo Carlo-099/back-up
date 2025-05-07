@@ -4,10 +4,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart to do lists</title>
 
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     @vite('resources/css/app.css')
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
     <style>
+        /* Apply Inter font to all elements */
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
         :root[data-theme="light"] {
             --bg-primary: #ffffff;
             --bg-secondary: #48A6A7;
@@ -281,16 +291,12 @@
                 </div>
             </div>
 
-            <div class="flex-1 p-8">
-                <div class="p-6 rounded-lg shadow-lg" style="background-color: var(--bg-primary);">
-            <main class="container">
-                {{ $slot }}
-            </main>
-
+            <div class="flex-1 w-full min-h-screen">
+                <main class="w-full h-full">
+                    {{ $slot }}
+                </main>
             </div>
-            </div>
-
         </div>
-     </div>
-    </body>
+    </div>
+</body>
 </html>

@@ -6,12 +6,22 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Smart to do list</title>
 
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     @vite('resources/css/app.css')
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
     <!-- FullCalendar CSS -->
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
     <style>
+        /* Apply Inter font to all elements */
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
         :root[data-theme="light"] {
             --bg-primary: #ffffff;
             --bg-secondary: #48A6A7;
@@ -565,7 +575,7 @@
                                 </button>
 
                                 <!-- Notification Dropdown -->
-                                <div id="notificationDropdown" class="notification-dropdown hidden">
+                                <div id="notificationDropdown" class="hidden notification-dropdown">
                                     <div class="notification-header">
                                         <h6 class="notification-title">Notifications</h6>
                                     </div>
@@ -585,7 +595,7 @@
                                         <!-- Admin Response Notifications -->
                                         @forelse ($feedbackNotifications as $feedback)
                                             <div class="notification-item {{ $feedback->is_read ? '' : 'unread bg-blue-50' }}" data-feedback-id="{{ $feedback->feedback_id }}">
-                                                <div class="notification-content flex items-center">
+                                                <div class="flex items-center notification-content">
                                                     <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-right:10px;">
                                                       <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                                                         <circle cx="9" cy="8" r="4" fill="#8CB4E2"/>
@@ -823,20 +833,20 @@
                     const feedbackData = window.feedbackData.find(f => f.feedback_id == currentFeedbackId);
                     if (feedbackData) {
                         adminModalContent.innerHTML = `
-                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto flex flex-col justify-center items-stretch">
-                                <h3 class="task-modal-title text-xl font-bold text-center mb-4">
+                            <div class="flex flex-col items-stretch justify-center w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
+                                <h3 class="mb-4 text-xl font-bold text-center task-modal-title">
                                     Admin Response Details
                                 </h3>
                                 <div class="space-y-4 text-justify">
                                     <div>
-                                        <div class="text-xs text-gray-500 font-semibold uppercase text-center">Title</div>
-                                        <div class="font-medium text-gray-800 text-center">${feedbackData.title}</div>
+                                        <div class="text-xs font-semibold text-center text-gray-500 uppercase">Title</div>
+                                        <div class="font-medium text-center text-gray-800">${feedbackData.title}</div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="flex items-start gap-2">
                                         <span class="text-green-500"><i class="fas fa-comment-alt"></i></span>
                                         <div>
-                                            <div class="text-xs text-gray-500 font-semibold uppercase">Your Message</div>
+                                            <div class="text-xs font-semibold text-gray-500 uppercase">Your Message</div>
                                             <div class="text-gray-700">${feedbackData.message}</div>
                                         </div>
                                     </div>
@@ -844,7 +854,7 @@
                                     <div class="flex items-start gap-2">
                                         <span class="text-indigo-500"><i class="fas fa-reply"></i></span>
                                         <div>
-                                            <div class="text-xs text-gray-500 font-semibold uppercase">Admin's Response</div>
+                                            <div class="text-xs font-semibold text-gray-500 uppercase">Admin's Response</div>
                                             <div class="text-gray-700">${feedbackData.admin_response}</div>
                                         </div>
                                     </div>
@@ -852,13 +862,13 @@
                                     <div class="flex items-start gap-2">
                                         <span class="text-gray-400"><i class="fas fa-clock"></i></span>
                                         <div>
-                                            <div class="text-xs text-gray-500 font-semibold uppercase">Response received</div>
+                                            <div class="text-xs font-semibold text-gray-500 uppercase">Response received</div>
                                             <div class="text-gray-600">${feedbackData.updated_at}</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="task-modal-buttons mt-6 flex justify-center">
-                                    <button class="task-modal-button no bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded" id="closeAdminModal">Close</button>
+                                <div class="flex justify-center mt-6 task-modal-buttons">
+                                    <button class="px-6 py-2 font-semibold text-gray-800 bg-gray-200 rounded task-modal-button no hover:bg-gray-300" id="closeAdminModal">Close</button>
                                 </div>
                             </div>
                         `;

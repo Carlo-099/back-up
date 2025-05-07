@@ -25,13 +25,19 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed'
+            'password' => 'required|string|min:8|confirmed',
+            'age' => 'required|integer|min:13',
+            'gender' => 'required|in:male,female',
+            'educational_level' => 'required|in:elementary,high school,senior high,college',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password'])
+            'password' => Hash::make($validated['password']),
+            'age' => $validated['age'],
+            'gender' => $validated['gender'],
+            'educational_level' => $validated['educational_level'],
         ]);
 
         Auth::login($user);
@@ -48,6 +54,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            // Update last login time
+            Auth::user()->updateLastLogin();
 
             // Check if user is admin
             if (Auth::user()->is_admin) {

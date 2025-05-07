@@ -59,7 +59,10 @@ class SettingController extends Controller
             'change_password' => 'nullable|min:6',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'theme' => 'nullable|in:light,dark',
-            'notification' => 'nullable|in:0,1'
+            'notification' => 'nullable|in:0,1',
+            'age' => 'nullable|integer|min:13',
+            'gender' => 'nullable|in:male,female',
+            'educational_level' => 'nullable|in:elementary,high school,senior high,college',
         ]);
 
         if ($validator->fails()) {
@@ -81,15 +84,19 @@ class SettingController extends Controller
                     ->withErrors(['current_password' => 'The current password is incorrect.'])
                     ->withInput();
             }
-
             // Get the user model directly to avoid double hashing
             $userModel = User::find($user->id);
             $userModel->password = $request->change_password; // The model will hash this automatically
             $userModel->save();
-
-            // Log the password change
             \Illuminate\Support\Facades\Log::info('Password changed for user: ' . $user->id);
         }
+
+        // Update user profile fields
+        $user = User::find($user->id);
+        $user->age = $request->input('age', $user->age);
+        $user->gender = $request->input('gender', $user->gender);
+        $user->educational_level = $request->input('educational_level', $user->educational_level);
+        $user->save();
 
         // Update settings
         if ($request->has('change_email')) {

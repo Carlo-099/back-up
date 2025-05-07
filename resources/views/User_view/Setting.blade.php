@@ -35,6 +35,33 @@
                                         <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md" value="{{ $settings->change_email ?? '' }}">
                                     </div>
 
+                                    <!-- Update Age and Gender -->
+                                    <div class="flex gap-4">
+                                        <div class="w-1/2">
+                                            <label class="block text-gray-700">Update Age:</label>
+                                            <input type="number" name="age" min="13" class="w-full p-2 mt-1 border rounded-md" value="{{ Auth::user()->age ?? '' }}">
+                                        </div>
+                                        <div class="w-1/2">
+                                            <label class="block text-gray-700">Change Gender:</label>
+                                            <select name="gender" class="w-full p-2 mt-1 border rounded-md">
+                                                <option value="" disabled {{ !Auth::user()->gender ? 'selected' : '' }}>Select Gender</option>
+                                                <option value="male" {{ (Auth::user()->gender ?? '') == 'male' ? 'selected' : '' }}>Male</option>
+                                                <option value="female" {{ (Auth::user()->gender ?? '') == 'female' ? 'selected' : '' }}>Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Update Educational Level -->
+                                    <div class="mt-4">
+                                        <label class="block text-gray-700">Update Educational Level:</label>
+                                        <select name="educational_level" class="w-full p-2 mt-1 border rounded-md">
+                                            <option value="" disabled {{ !Auth::user()->educational_level ? 'selected' : '' }}>Select Educational Level</option>
+                                            <option value="elementary" {{ (Auth::user()->educational_level ?? '') == 'elementary' ? 'selected' : '' }}>Elementary</option>
+                                            <option value="high school" {{ (Auth::user()->educational_level ?? '') == 'high school' ? 'selected' : '' }}>High School</option>
+                                            <option value="senior high" {{ (Auth::user()->educational_level ?? '') == 'senior high' ? 'selected' : '' }}>Senior High</option>
+                                            <option value="college" {{ (Auth::user()->educational_level ?? '') == 'college' ? 'selected' : '' }}>College</option>
+                                        </select>
+                                    </div>
+
                                     <!-- Current Password -->
                                     <div>
                                         <label class="block text-gray-700">Enter Current Password:</label>

@@ -7,7 +7,7 @@
     <title>Smart to do list</title>
     @vite('resources/css/app.css')
 </head>
-<body>
+<body class="min-h-screen bg-gray-100 overflow-y-auto">
     <div class="min-h-screen bg-gray-100">
         <!-- Navigation Bar -->
         <header>

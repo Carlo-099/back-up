@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'age',
+        'gender',
+        'educational_level',
+        'last_login_at',
         'is_admin',
     ];
 
@@ -42,6 +46,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_login_at' => 'datetime',
+        'is_admin' => 'boolean',
     ];
 
     /**
@@ -50,5 +56,10 @@ class User extends Authenticatable
     public function reference()
     {
         return $this->hasOne(Reference::class, 'user_id', 'id');
+    }
+
+    public function updateLastLogin()
+    {
+        $this->update(['last_login_at' => now()]);
     }
 }
