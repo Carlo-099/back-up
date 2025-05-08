@@ -1,5 +1,6 @@
 @php
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 @endphp
 
 <x-userlayout>
@@ -70,9 +71,69 @@ use Carbon\Carbon;
             </div>
             <!-- Insights Card -->
             <div class="flex flex-col justify-between p-6 transition-all duration-300 border h-72 bg-white/10 backdrop-blur-lg rounded-xl border-white/20 hover:bg-white/20">
-                <h3 class="mb-4 text-xl font-semibold text-white">Insights</h3>
-                <div class="flex items-center justify-center flex-1 text-gray-400">
-                    More insights coming soon!
+                <h3 class="mb-4 text-xl font-semibold text-white">AI Insights</h3>
+                <div class="space-y-4 overflow-y-auto" style="scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) rgba(255,255,255,0.1);">
+                    @php
+                        $today = \Carbon\Carbon::today();
+                        $insights = DB::table('user_insights')
+                            ->where('user_id', auth()->id())
+                            ->where('date', $today)
+                            ->first();
+
+                        if ($insights) {
+                            $insights = json_decode($insights->insights, true);
+                        }
+                    @endphp
+
+                    @if($insights)
+                        <!-- Daily Summary -->
+                        <div class="p-3 rounded-lg bg-white/5">
+                            <h4 class="mb-2 text-sm font-medium text-white">Yesterday's Summary</h4>
+                            <p class="text-sm text-gray-300">
+                                Completed <span class="font-medium text-white">{{ $insights['daily_summary']['completed_yesterday'] }}</span> tasks
+                                with an average completion time of
+                                <span class="font-medium text-white">{{ $insights['daily_summary']['avg_completion_time'] }}</span> hours.
+                            </p>
+                        </div>
+
+                        <!-- Productivity Time -->
+                        <div class="p-3 rounded-lg bg-white/5">
+                            <h4 class="mb-2 text-sm font-medium text-white">Productivity Pattern</h4>
+                            <p class="text-sm text-gray-300">
+                                Your most productive hour is
+                                <span class="font-medium text-white">
+                                    {{ \Carbon\Carbon::createFromFormat('H', $insights['daily_summary']['most_productive_hour'])->format('g A') }}
+                                </span>
+                            </p>
+                        </div>
+
+                        <!-- Category Distribution -->
+                        <div class="p-3 rounded-lg bg-white/5">
+                            <h4 class="mb-2 text-sm font-medium text-white">Category Focus</h4>
+                            @foreach($insights['category_insights'] as $category)
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm text-gray-300">{{ $category['name'] }}</span>
+                                    <span class="text-sm font-medium text-white">{{ $category['percentage'] }}%</span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- AI Suggestions -->
+                        <div class="p-3 rounded-lg bg-white/5">
+                            <h4 class="mb-2 text-sm font-medium text-white">AI Suggestions</h4>
+                            <ul class="space-y-2">
+                                @foreach($insights['suggestions'] as $suggestion)
+                                    <li class="text-sm text-gray-300">
+                                        <span class="text-yellow-400">•</span> {{ $suggestion }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-gray-400">Today's insights will be available at 7 AM</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
