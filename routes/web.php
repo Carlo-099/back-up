@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserManageController;
+use App\Http\Controllers\AnnouncementController;
 
 
 /*
@@ -71,8 +72,9 @@ Route::get('/read-feedback', [FeedbackController::class, 'adminIndex'])->name('r
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-
+Route::get('/admin-dashboard', function () {
+    return view('Admin_view.AdminDashboard');
+})->name('admin.dashboard')->middleware('auth');
 
 //THIS PART IS FOR THE LOGIN, REGISTER, AND WELCOME PAGE
 Route::middleware('guest')->controller(AuthController::class)->group(function (){
@@ -97,4 +99,6 @@ Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 
 // Notification-related route
 Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
 
