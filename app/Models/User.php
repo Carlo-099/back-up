@@ -62,4 +62,14 @@ class User extends Authenticatable
     {
         $this->update(['last_login_at' => now()]);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function hasUnreadNotifications()
+    {
+        return $this->notifications()->where('status', 'unread')->exists();
+    }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserManageController;
+use App\Http\Controllers\AnnouncementController;
 
 
 /*
@@ -63,9 +64,8 @@ Route::get('/user/{id}', [UserManageController::class, 'show'])->name('user.show
 Route::put('/user/{id}', [UserManageController::class, 'update'])->name('user.update')->middleware('auth');
 Route::delete('/user/{id}', [UserManageController::class, 'destroy'])->name('user.destroy')->middleware('auth');
 
-Route::get('/send-announcement', function () {
-    return view('Admin_view.SendAnnouncement');
-})->name('send-announcement')->middleware('auth');
+Route::get('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'index'])->name('send-announcement')->middleware('auth');
+Route::post('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'store'])->name('announcement.store')->middleware('auth');
 
 Route::get('/read-feedback', [FeedbackController::class, 'adminIndex'])->name('read-feedback')->middleware('auth');
 
