@@ -13,7 +13,19 @@
             <!-- Form Section (narrower) -->
             <div class="w-full lg:w-2/5 flex-[2] max-w-xl lg:mb-0">
                 <div class="flex flex-col h-full p-6 overflow-hidden border shadow-2xl bg-white/10 backdrop-blur-lg rounded-2xl border-white/20">
-                    <form method="POST" action="{{ route('announcement.store') }}" class="space-y-4">
+                    @if(session('success'))
+                        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('announcement.store') }}" method="POST">
                         @csrf
                         <!-- Announcement Textarea -->
                         <div>
@@ -23,8 +35,12 @@
                                 name="announcement"
                                 rows="5"
                                 class="w-full p-3 text-white placeholder-gray-400 transition-all duration-200 border rounded-lg resize-none bg-white/5 border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Type your announcement here..."></textarea>
+                                placeholder="Type your announcement here..."
+                                required></textarea>
                             <p class="mt-1 text-xs text-gray-400">Maximum 500 characters</p>
+                            @error('announcement')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                         <!-- Buttons -->
                         <div class="flex justify-end pt-3 space-x-3 border-t border-white/10">
@@ -46,7 +62,6 @@
                     <!-- Header Section -->
                     <div class="mb-6">
                         <h2 class="inline-block px-2 py-1 text-2xl font-bold text-white">Recent Active Users</h2>
-
                     </div>
                     <!-- User Activity List -->
                     <div class="flex-1 overflow-x-auto">

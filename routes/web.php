@@ -33,8 +33,6 @@ Route::get('/content', [ContentController::class, 'index'])->name('content')->mi
 
 Route::get('/status', [StatusController::class, 'index'])->name('status')->middleware('auth');
 
-Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category')->middleware('auth');
-
 Route::get('/category', [CategoryController::class, 'index'])->name('category')->middleware('auth');
 
 // Feedback Routes
@@ -57,17 +55,17 @@ Route::get('/admin-setting', [AdminSettingController::class, 'index'])->name('Ad
 Route::post('/admin-setting', [AdminSettingController::class, 'update'])->name('admin.setting.update')->middleware('auth');
 
 //THIS PART IS THE ROUTES FOR THE ADMIN
-Route::get('/user-manage', [UserManageController::class, 'index'])->name('user-manage')->middleware('auth');
-
-// Add new routes for user information management
-Route::get('/user/{id}', [UserManageController::class, 'show'])->name('user.show')->middleware('auth');
-Route::put('/user/{id}', [UserManageController::class, 'update'])->name('user.update')->middleware('auth');
-Route::delete('/user/{id}', [UserManageController::class, 'destroy'])->name('user.destroy')->middleware('auth');
-
-Route::get('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'index'])->name('send-announcement')->middleware('auth');
-Route::post('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'store'])->name('announcement.store')->middleware('auth');
-
-Route::get('/read-feedback', [FeedbackController::class, 'adminIndex'])->name('read-feedback')->middleware('auth');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/user-manage', [UserManageController::class, 'index'])->name('user-manage');
+    Route::get('/user/{id}', [UserManageController::class, 'show'])->name('user.show');
+    Route::put('/user/{id}', [UserManageController::class, 'update'])->name('user.update');
+    Route::delete('/user/{id}', [UserManageController::class, 'destroy'])->name('user.destroy');
+    Route::get('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'index'])->name('send-announcement');
+    Route::post('/send-announcement', [App\Http\Controllers\AnnouncementController::class, 'store'])->name('announcement.store');
+    Route::get('/announcement/{id}', [App\Http\Controllers\AnnouncementController::class, 'show'])->name('announcement.show');
+    Route::get('/read-feedback', [FeedbackController::class, 'adminIndex'])->name('read-feedback');
+    Route::get('/api/dashboard-stats', [UserManageController::class, 'getDashboardStats'])->name('dashboard.stats');
+});
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -97,4 +95,7 @@ Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 
 // Notification-related route
 Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+// Announcement Routes
+Route::get('/announcement/{id}', [App\Http\Controllers\AnnouncementController::class, 'show'])->name('announcement.show')->middleware('auth');
 

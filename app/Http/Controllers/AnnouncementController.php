@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,13 +22,40 @@ class AnnouncementController extends Controller
 
     public function store(Request $request)
     {
+        // Validate the request
         $validated = $request->validate([
             'announcement' => 'required|string|max:500',
         ]);
 
-        // Here you would typically save the announcement to the database
-        // and notify users. For now, we'll just redirect back with a success message
+        // Check if user is admin
+        if (!Auth::user()->is_admin) {
+            return redirect()->back()->with('error', 'Only administrators can send announcements.');
+        }
+
+        // Create the announcement
+        $announcement = new Announcement();
+        $announcement->user_id = Auth::id();
+        $announcement->message_anounce = $validated['announcement'];
+        $announcement->save();
 
         return redirect()->back()->with('success', 'Announcement sent successfully!');
+    }
+
+    public function show($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+
+        // Mark the announcement as read for the current user
+        $announcement->markAsRead(Auth::id());
+
+        return response()->json($announcement);
+    }
+
+    // Add this method to mark announcements as read
+    public function markAsRead($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->markAsRead(Auth::id());
+        return response()->json(['success' => true]);
     }
 }

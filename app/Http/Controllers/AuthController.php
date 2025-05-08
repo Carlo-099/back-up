@@ -60,10 +60,10 @@ class AuthController extends Controller
 
             // Check if user is admin
             if (Auth::user()->is_admin) {
-                return redirect()->route('user-manage');
+                return redirect()->intended(route('user-manage'));
             }
 
-            return redirect()->route('content');
+            return redirect()->intended(route('content'));
         }
 
         throw ValidationException::withMessages([

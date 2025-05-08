@@ -6,7 +6,7 @@
 
   @vite('resources/css/app.css')
 </head>
-<body class="min-h-screen bg-gray-100 overflow-y-auto">
+<body class="min-h-screen overflow-y-auto bg-gray-100">
   <div class="min-h-screen bg-gray-100">
     <!-- Navigation Bar -->
     <header>

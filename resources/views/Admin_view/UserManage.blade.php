@@ -1,3 +1,7 @@
+@php
+use App\Models\Task;
+@endphp
+
 <x-adminlayout>
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -372,13 +376,23 @@
         Chart.defaults.color = '#9CA3AF';
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
+        // Initial data from PHP variables
+        const initialData = {
+            gender: @json($genderDistribution),
+            age: @json($ageDistribution),
+            education: @json($educationDistribution),
+            taskStats: @json($taskStatsData)
+        };
+
+        console.log('Initial Task Stats:', initialData.taskStats);
+
         const charts = {
             gender: new Chart(document.getElementById('genderChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: ['Male', 'Female'],
                     datasets: [{
-                        data: [],
+                        data: [initialData.gender.male || 0, initialData.gender.female || 0],
                         backgroundColor: ['#3B82F6', '#EC4899'],
                         borderWidth: 0
                     }]
@@ -403,7 +417,7 @@
                     labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
                     datasets: [{
                         label: 'Users',
-                        data: [],
+                        data: Object.values(initialData.age),
                         backgroundColor: '#10B981',
                         borderRadius: 6
                     }]
@@ -437,7 +451,7 @@
                     labels: ['Elementary', 'High School', 'Senior High', 'College'],
                     datasets: [{
                         label: 'Users',
-                        data: [],
+                        data: Object.values(initialData.education),
                         backgroundColor: '#6366F1',
                         borderRadius: 6
                     }]
@@ -470,7 +484,11 @@
                 data: {
                     labels: ['Completed', 'In Progress', 'Pending'],
                     datasets: [{
-                        data: [],
+                        data: [
+                            initialData.taskStats.complete || 0,
+                            initialData.taskStats.in_progress || 0,
+                            initialData.taskStats.pending || 0
+                        ],
                         backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
                         borderWidth: 0
                     }]
@@ -495,34 +513,150 @@
                     datasets: [{
                         label: 'Active Users',
                         data: [],
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
+                        borderColor: '#22d47b', // Neon green
+                        backgroundColor: ctx => {
+                            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+                            gradient.addColorStop(0, 'rgba(34, 212, 123, 0.15)');
+                            gradient.addColorStop(1, 'rgba(34, 212, 123, 0)');
+                            return gradient;
+                        },
+                        tension: 0.45,
+                        fill: true,
+                        pointBackgroundColor: '#22d47b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 4,
+                        pointHoverBackgroundColor: '#22d47b',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 4,
+                        shadowBlur: 16,
+                        shadowColor: 'rgba(34, 212, 123, 0.7)'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#22d47b',
+                            borderWidth: 1,
+                            padding: 14,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.parsed.y} active users`;
+                                }
+                            }
+                        },
+                        // Custom plugin for endpoint badge
+                        endpointBadge: {
+                            enabled: true
                         }
+                    },
+                    layout: {
+                        padding: { left: 0, right: 0, top: 20, bottom: 0 }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                            grid: { display: false },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: { size: 13, family: 'Inter, sans-serif' },
+                                padding: 10
+                            },
+                            border: { display: false }
                         },
                         x: {
-                            grid: {
-                                display: false
-                            }
+                            grid: { display: false },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: { size: 13, family: 'Inter, sans-serif' },
+                                padding: 10
+                            },
+                            border: { display: false }
                         }
+                    },
+                    interaction: { intersect: false, mode: 'index' },
+                    elements: {
+                        line: {
+                            borderWidth: 4,
+                            borderColor: '#22d47b',
+                            fill: true
+                        },
+                        point: {
+                            radius: 6,
+                            backgroundColor: '#22d47b',
+                            borderColor: '#fff',
+                            borderWidth: 3
+                        }
+                    },
+                    animation: {
+                        duration: 900,
+                        easing: 'easeOutQuart'
                     }
-                }
+                },
+                plugins: [{
+                    // Custom plugin for endpoint badge
+                    id: 'endpointBadge',
+                    afterDatasetsDraw(chart, args, options) {
+                        if (!options.enabled) return;
+                        const { ctx, data, chartArea } = chart;
+                        const dataset = chart.getDatasetMeta(0);
+                        if (!dataset || !dataset.data.length) return;
+                        const lastPoint = dataset.data[dataset.data.length - 1];
+                        const value = data.datasets[0].data[data.datasets[0].data.length - 1];
+                        ctx.save();
+                        ctx.font = 'bold 12px Inter, sans-serif';
+                        ctx.textAlign = 'left';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = '#22d47b';
+                        ctx.strokeStyle = '#222';
+                        ctx.lineWidth = 2;
+                        // Draw rounded badge
+                        const badgeText = 'JUN'; // You can make this dynamic if needed
+                        const badgeWidth = ctx.measureText(badgeText).width + 18;
+                        const badgeHeight = 24;
+                        const badgeX = lastPoint.x + 12;
+                        const badgeY = lastPoint.y - badgeHeight / 2;
+                        ctx.beginPath();
+                        ctx.moveTo(badgeX + 8, badgeY);
+                        ctx.lineTo(badgeX + badgeWidth - 8, badgeY);
+                        ctx.quadraticCurveTo(badgeX + badgeWidth, badgeY, badgeX + badgeWidth, badgeY + 8);
+                        ctx.lineTo(badgeX + badgeWidth, badgeY + badgeHeight - 8);
+                        ctx.quadraticCurveTo(badgeX + badgeWidth, badgeY + badgeHeight, badgeX + badgeWidth - 8, badgeY + badgeHeight);
+                        ctx.lineTo(badgeX + 8, badgeY + badgeHeight);
+                        ctx.quadraticCurveTo(badgeX, badgeY + badgeHeight, badgeX, badgeY + badgeHeight - 8);
+                        ctx.lineTo(badgeX, badgeY + 8);
+                        ctx.quadraticCurveTo(badgeX, badgeY, badgeX + 8, badgeY);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.fillStyle = '#fff';
+                        ctx.fillText(badgeText, badgeX + 9, badgeY + badgeHeight / 2);
+                        ctx.restore();
+                    }
+                }, {
+                    // Glow effect for line
+                    id: 'glowLine',
+                    beforeDraw(chart) {
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = '#22d47b';
+                        ctx.shadowBlur = 16;
+                    },
+                    afterDraw(chart) {
+                        chart.ctx.restore();
+                    }
+                }]
             })
         };
 
@@ -545,52 +679,34 @@
                 charts.gender.data.datasets[0].data = data.gender;
                 charts.age.data.datasets[0].data = data.age;
                 charts.education.data.datasets[0].data = data.education;
-                charts.taskStats.data.datasets[0].data = data.taskStats;
-                charts.activity.data.labels = data.activity.labels;
-                charts.activity.data.datasets[0].data = data.activity.data;
+                charts.taskStats.data.datasets[0].data = [
+                    data.taskStats.complete || 0,
+                    data.taskStats.in_progress || 0,
+                    data.taskStats.pending || 0
+                ];
 
-                // Update all charts
-                Object.values(charts).forEach(chart => chart.update());
+                // Update activity chart with animation
+                const activityData = data.activity;
+                if (activityData && activityData.labels && activityData.data) {
+                    // Add a subtle animation when updating the data
+                    charts.activity.data.labels = activityData.labels;
+                    charts.activity.data.datasets[0].data = activityData.data;
 
-                // Update active users list
-                const activeUsersList = document.getElementById('activeUsersList');
-                activeUsersList.innerHTML = data.activeUsers.map(user => `
-                    <div class="flex items-center justify-between p-3 transition-all duration-300 rounded-lg bg-white/5 hover:bg-white/10">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full">
-                                ${user.profile_picture ?
-                                    `<img src="${user.profile_picture}" alt="${user.name}" class="object-cover w-full h-full">` :
-                                    `<div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-blue-500 to-purple-500">
-                                        <i class="text-white fas fa-user"></i>
-                                    </div>`
-                                }
-                            </div>
-                            <div>
-                                <div class="font-medium text-white">${user.name}</div>
-                                <div class="text-sm text-gray-400">Last active: ${user.last_active}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                    // Calculate trend
+                    const values = activityData.data;
+                    const trend = values[values.length - 1] > values[0] ? 'up' : 'down';
+                    const change = Math.abs(((values[values.length - 1] - values[0]) / values[0]) * 100).toFixed(1);
 
-                // Update recent tasks list
-                const recentTasksList = document.getElementById('recentTasksList');
-                recentTasksList.innerHTML = data.recentTasks.map(task => `
-                    <div class="flex items-center justify-between p-3 transition-all duration-300 rounded-lg bg-white/5 hover:bg-white/10">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-blue-500">
-                                <i class="text-white fas fa-check"></i>
-                            </div>
-                            <div>
-                                <div class="font-medium text-white">${task.user_name}</div>
-                                <div class="text-sm text-gray-400">${task.title}</div>
-                            </div>
-                        </div>
-                        <span class="px-2 py-1 text-xs font-semibold text-green-400 rounded-full bg-green-500/20">
-                            Completed
-                        </span>
-                    </div>
-                `).join('');
+                    // Update the chart with animation
+                    charts.activity.update('active');
+                }
+
+                // Update all other charts
+                Object.entries(charts).forEach(([key, chart]) => {
+                    if (key !== 'activity') {
+                        chart.update();
+                    }
+                });
 
             } catch (error) {
                 console.error('Error updating dashboard:', error);
@@ -604,7 +720,7 @@
             document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
 
             try {
-                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Manila&units=metric&appid=YOUR_API_KEY');
+                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Manila&units=metric&appid=d4d01f5e0e7c2c0d5f9c2c6f3d3e3f3f');
                 const data = await response.json();
 
                 document.getElementById('temperature').textContent = `${Math.round(data.main.temp)}°C`;
@@ -616,6 +732,10 @@
                 weatherIcon.className = `text-2xl text-yellow-400 fas fa-${getWeatherIcon(iconCode)}`;
             } catch (error) {
                 console.error('Error fetching weather:', error);
+                // Set default values if weather API fails
+                document.getElementById('temperature').textContent = '--°C';
+                document.getElementById('weatherDesc').textContent = 'Weather data unavailable';
+                document.getElementById('weatherIcon').className = 'text-2xl text-yellow-400 fas fa-sun';
             }
         }
 

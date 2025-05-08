@@ -590,19 +590,41 @@
                                                 ->whereNotNull('admin_response')
                                                 ->orderBy('updated_at', 'desc')
                                                 ->get();
+
+                                            // Get recent announcements
+                                            $announcements = \App\Models\Announcement::with('user')
+                                                ->orderBy('created_at', 'desc')
+                                                ->take(5)
+                                                ->get();
                                         @endphp
+
+                                        <!-- Announcement Notifications -->
+                                        @forelse ($announcements as $announcement)
+                                            <div class="notification-item {{ $announcement->isReadBy(Auth::id()) ? '' : 'unread bg-blue-50' }}" data-announcement-id="{{ $announcement->announcement_id }}">
+                                                <div class="flex items-center notification-content">
+                                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-right:10px;">
+                                                        <i class="text-blue-500 fas fa-bullhorn"></i>
+                                                    </span>
+                                                    <div>
+                                                        <span class="font-semibold">Announcement</span>
+                                                        @if(!$announcement->isReadBy(Auth::id()))
+                                                            <span class="ml-2 inline-block px-2 py-0.5 text-xs font-bold text-white bg-blue-500 rounded-full align-middle">New</span>
+                                                        @endif
+                                                        <br>
+                                                        <span class="notification-time">{{ $announcement->created_at->diffForHumans() }}</span>
+                                                    </div>
+                                                </div>
+                                                <button class="view-button" onclick="showAnnouncementModal({{ $announcement->announcement_id }})">View</button>
+                                            </div>
+                                        @empty
+                                        @endforelse
 
                                         <!-- Admin Response Notifications -->
                                         @forelse ($feedbackNotifications as $feedback)
                                             <div class="notification-item {{ $feedback->is_read ? '' : 'unread bg-blue-50' }}" data-feedback-id="{{ $feedback->feedback_id }}">
                                                 <div class="flex items-center notification-content">
                                                     <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-right:10px;">
-                                                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                                        <circle cx="9" cy="8" r="4" fill="#8CB4E2"/>
-                                                        <path d="M9 14c-3.5 0-6 1.5-6 3.5V20h9.5a5.5 5.5 0 0 1 5.5-5.5c.34 0 .67.03 1 .08V17a2 2 0 0 0 2 2h1v-1.5c0-2-2.5-3.5-6-3.5z" fill="#4A6FA5"/>
-                                                        <circle cx="18.5" cy="18.5" r="2.5" fill="#4A6FA5"/>
-                                                        <path d="M18.5 16v-1M18.5 21v-1M21 18.5h-1M16 18.5h-1M20.07 16.93l-.71.71M16.93 20.07l-.71.71M20.07 20.07l-.71-.71M16.93 16.93l-.71-.71" stroke="#fff" stroke-width="1"/>
-                                                      </svg>
+                                                        <i class="text-blue-500 fas fa-comment"></i>
                                                     </span>
                                                     <div>
                                                         <span class="font-semibold">From Admin</span>
@@ -616,25 +638,35 @@
                                                 <button class="view-button" data-feedback-id="{{ $feedback->feedback_id }}">View</button>
                                             </div>
                                         @empty
-                                            <div class="notification-empty">
-                                                <p>No new responses</p>
-                                            </div>
                                         @endforelse
 
                                         <!-- Task Notifications -->
                                         @forelse ($tasks as $task)
                                             <div class="notification-item unread" data-task-id="{{ $task->task_id }}">
-                                                <div class="notification-content">
-                                                    <p class="notification-text">{{ $task->title }}</p>
-                                                    <span class="notification-time">Due: {{ $task->due_date->format('d M Y') }}</span>
-                                                    <span class="notification-status status-{{ strtolower(str_replace(' ', '-', $task->status)) }}">
-                                                        {{ $task->status }}
+                                                <div class="flex items-center notification-content">
+                                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-right:10px;">
+                                                        @if($task->category)
+                                                            @if($task->category->category_type === 'home')
+                                                                <i class="text-blue-500 fas fa-home"></i>
+                                                            @elseif($task->category->category_type === 'school')
+                                                                <i class="text-green-500 fas fa-graduation-cap"></i>
+                                                            @elseif($task->category->category_type === 'outdoors')
+                                                                <i class="text-yellow-500 fas fa-tree"></i>
+                                                            @endif
+                                                        @endif
                                                     </span>
+                                                    <div>
+                                                        <p class="notification-text">{{ $task->title }}</p>
+                                                        <span class="notification-time">Due: {{ $task->due_date->format('d M Y') }}</span>
+                                                        <span class="notification-status status-{{ strtolower(str_replace(' ', '-', $task->status)) }}">
+                                                            {{ $task->status }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 <button class="view-button" data-task-id="{{ $task->task_id }}">View</button>
                                             </div>
                                         @empty
-                                            @if($feedbackNotifications->isEmpty())
+                                            @if($feedbackNotifications->isEmpty() && $announcements->isEmpty())
                                                 <div class="notification-empty">
                                                     <p>No new notifications</p>
                                                 </div>
@@ -963,6 +995,76 @@
 
 <script>
 window.feedbackData = @json($feedbackData);
+</script>
+
+<!-- Announcement Modal -->
+<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div class="absolute top-0 right-0 pt-4 pr-4">
+                <button type="button" onclick="closeAnnouncementModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <span class="sr-only">Close</span>
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="sm:flex sm:items-start">
+                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-blue-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                    <i class="text-blue-600 fas fa-bullhorn"></i>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                        Announcement
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500" id="announcementContent"></p>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-400" id="announcementTime"></div>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button type="button" onclick="closeAnnouncementModal()" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to show announcement modal
+    function showAnnouncementModal(announcementId) {
+        // Fetch announcement content
+        fetch(`/announcement/${announcementId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('announcementContent').textContent = data.message_anounce;
+                document.getElementById('announcementTime').textContent = `Posted ${new Date(data.created_at).toLocaleString()}`;
+                document.getElementById('announcementModal').classList.remove('hidden');
+
+                // Remove the "New" badge and unread styling
+                const notificationItem = document.querySelector(`.notification-item[data-announcement-id="${announcementId}"]`);
+                if (notificationItem) {
+                    notificationItem.classList.remove('unread', 'bg-blue-50');
+                    const badge = notificationItem.querySelector('.bg-blue-500');
+                    if (badge) badge.remove();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Function to close announcement modal
+    function closeAnnouncementModal() {
+        document.getElementById('announcementModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('announcementModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAnnouncementModal();
+        }
+    });
 </script>
 
 </body>

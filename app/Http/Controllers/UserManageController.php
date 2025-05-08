@@ -58,6 +58,22 @@ class UserManageController extends Controller
             ->pluck('count', 'educational_level')
             ->toArray();
 
+        // Get task statistics
+        $taskStats = Task::whereHas('user', function($query) {
+            $query->where('is_admin', false);
+        })
+        ->select('status', DB::raw('count(*) as count'))
+        ->groupBy('status')
+        ->get()
+        ->pluck('count', 'status')
+        ->toArray();
+
+        $taskStatsData = [
+            'complete' => $taskStats['complete'] ?? 0,
+            'in_progress' => $taskStats['in_progress'] ?? 0,
+            'pending' => $taskStats['pending'] ?? 0
+        ];
+
         // Get all users for display
         $users = User::where('is_admin', false)
             ->with(['reference.settings'])
@@ -94,7 +110,8 @@ class UserManageController extends Controller
             'educationDistribution',
             'users',
             'recentTasks',
-            'weatherData'
+            'weatherData',
+            'taskStatsData'
         ));
     }
 
@@ -130,6 +147,127 @@ class UserManageController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    public function getDashboardStats()
+    {
+        // Get total users and new users
+        $totalUsers = User::where('is_admin', false)->count();
+        $newUsers = User::where('is_admin', false)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+        $lastMonthUsers = User::where('is_admin', false)
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->count();
+
+        // Get gender distribution
+        $genderData = User::where('is_admin', false)
+            ->select('gender', DB::raw('count(*) as count'))
+            ->groupBy('gender')
+            ->get();
+        $gender = [
+            $genderData->where('gender', 'male')->first()->count ?? 0,
+            $genderData->where('gender', 'female')->first()->count ?? 0
+        ];
+
+        // Get age distribution
+        $ageData = User::where('is_admin', false)
+            ->select(DB::raw('
+                CASE
+                    WHEN age BETWEEN 18 AND 24 THEN "18-24"
+                    WHEN age BETWEEN 25 AND 34 THEN "25-34"
+                    WHEN age BETWEEN 35 AND 44 THEN "35-44"
+                    WHEN age BETWEEN 45 AND 54 THEN "45-54"
+                    ELSE "55+"
+                END as age_group'
+            ), DB::raw('count(*) as count'))
+            ->groupBy('age_group')
+            ->orderBy('age_group')
+            ->pluck('count')
+            ->toArray();
+
+        // Get education distribution
+        $educationData = User::where('is_admin', false)
+            ->select('educational_level', DB::raw('count(*) as count'))
+            ->groupBy('educational_level')
+            ->orderBy(DB::raw('FIELD(educational_level, "elementary", "high school", "senior high", "college")'))
+            ->pluck('count')
+            ->toArray();
+
+        // Get task statistics
+        $taskStats = Task::whereHas('user', function($query) {
+            $query->where('is_admin', false);
+        })
+        ->select('status', DB::raw('count(*) as count'))
+        ->groupBy('status')
+        ->get()
+        ->pluck('count', 'status')
+        ->toArray();
+
+        $taskStatsData = [
+            'complete' => $taskStats['complete'] ?? 0,
+            'in_progress' => $taskStats['in_progress'] ?? 0,
+            'pending' => $taskStats['pending'] ?? 0
+        ];
+
+        // Get user activity for the last 7 days
+        $activityData = User::where('is_admin', false)
+            ->where('last_login_at', '>=', now()->subDays(7))
+            ->select(DB::raw('DATE(last_login_at) as date'), DB::raw('count(distinct id) as count'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $activity = [
+            'labels' => $activityData->pluck('date')->map(function($date) {
+                return Carbon::parse($date)->format('M d');
+            })->toArray(),
+            'data' => $activityData->pluck('count')->toArray()
+        ];
+
+        // Get active users
+        $activeUsers = User::where('is_admin', false)
+            ->where('last_login_at', '>=', now()->subDays(30))
+            ->orderBy('last_login_at', 'desc')
+            ->take(10)
+            ->get()
+            ->map(function($user) {
+                return [
+                    'name' => $user->name,
+                    'profile_picture' => $user->reference?->settings?->profile_picture,
+                    'last_active' => $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Never'
+                ];
+            });
+
+        // Get recent completed tasks
+        $recentTasks = Task::with(['user', 'category'])
+            ->where('status', 'complete')
+            ->whereHas('user', function($query) {
+                $query->where('is_admin', false);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($task) {
+                return [
+                    'user_name' => $task->user->name,
+                    'title' => $task->title,
+                    'completed_at' => $task->updated_at->diffForHumans()
+                ];
+            });
+
+        return response()->json([
+            'totalUsers' => $totalUsers,
+            'newUsers' => $newUsers,
+            'lastMonthUsers' => $lastMonthUsers,
+            'gender' => $gender,
+            'age' => $ageData,
+            'education' => $educationData,
+            'taskStats' => $taskStatsData,
+            'activity' => $activity,
+            'activeUsers' => $activeUsers,
+            'recentTasks' => $recentTasks
+        ]);
     }
 
     private function getWeatherData()
