@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ProductivityInsightController;
 
 
 /*
@@ -43,9 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/feedback/mark-as-read/{feedbackId}', [FeedbackController::class, 'markAsRead'])->name('feedback.mark-as-read');
 });
 
-Route::get('/productivity-insight', function () {
-    return view('User_view.Productivity_insight');
-})->name('productivity-insight')->middleware('auth');
+Route::get('/productivity-insight', [ProductivityInsightController::class, 'index'])->name('productivity-insight')->middleware('auth');
 
 Route::get('/setting', [SettingController::class, 'index'])->name('setting')->middleware('auth');
 Route::post('/setting', [SettingController::class, 'update'])->name('setting.update')->middleware('auth');
