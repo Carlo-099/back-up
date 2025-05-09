@@ -33,7 +33,6 @@
       <span class="pr-2 border-r-2">
         Hi There, {{ Auth::user()->name }}
       </span>
-      <a href="{{ route('ninjas.create') }}">Create New Ninja</a>
       <form action="{{ route('logout') }}" method="POST" class="m-0">
         @csrf
         <button class="btn">logout</button>

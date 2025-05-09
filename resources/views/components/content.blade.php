@@ -22,8 +22,8 @@
                             <a href="{{ route('show.register') }}" class="btn">Register</a>
                         @endguest
                         @auth
-                            <a href="{{ route('ninjas.index') }}" class="btn">Tasks</a>
-                            <a href="{{ route('ninjas.create') }}" class="btn">Create Task</a>
+                            <a href="/tasks" class="btn">Tasks</a>
+                            <a href="/tasks/create" class="btn">Create Task</a>
                         @endauth
                     </div>
                 </div>
@@ -52,10 +52,10 @@
                         <i class="mr-2 fas fa-home"></i> Home
                     </a>
                     @auth
-                        <a href="{{ route('ninjas.index') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                        <a href="/tasks" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="mr-2 fas fa-tasks"></i> My Tasks
                         </a>
-                        <a href="{{ route('ninjas.create') }}" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+                        <a href="/tasks/create" class="block px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="mr-2 fas fa-plus"></i> Create Task
                         </a>
                     @else
