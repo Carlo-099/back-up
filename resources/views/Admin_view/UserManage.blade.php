@@ -8,27 +8,270 @@ use App\Models\Task;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <style>
+        /* Theme Variables */
+        :root[data-theme="dark"] {
+            --bg-gradient-from: #23272f;
+            --bg-gradient-to: #1a1e24;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-hover-bg: rgba(255, 255, 255, 0.2);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --card-shadow: none;
+            --text-primary: #F3F4F6;
+            --text-secondary: #e5e7eb;
+            --text-muted: #a0aec0;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #22d47b;
+            --accent-pink: #ec4899;
+            --accent-yellow: #eab308;
+            --chart-gradient-start: rgba(59, 130, 246, 0.2);
+            --chart-gradient-end: rgba(139, 92, 246, 0.2);
+            --modal-bg: linear-gradient(to bottom right, #1f2937, #111827);
+            --modal-border: #374151;
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --input-focus-ring: #3b82f6;
+            --scrollbar-track: rgba(255, 255, 255, 0.1);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+            --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
+            --chart-text: #F3F4F6;
+        }
+
+        :root[data-theme="light"] {
+            --bg-gradient-from: #f0f7f4;
+            --bg-gradient-to: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-hover-bg: rgba(255, 255, 255, 0.98);
+            --card-border: #2ecc71;
+            --card-shadow: 0 4px 24px 0 rgba(46, 204, 113, 0.10), 0 1.5px 6px 0 rgba(46, 204, 113, 0.08);
+            --text-primary: #1a2b36;
+            --text-secondary: #3a4a56;
+            --text-muted: #6b7a89;
+            --accent-blue: #2ecc71;
+            --accent-purple: #27ae60;
+            --accent-green: #2ecc71;
+            --accent-pink: #27ae60;
+            --accent-yellow: #f1c40f;
+            --chart-gradient-start: rgba(46, 204, 113, 0.2);
+            --chart-gradient-end: rgba(39, 174, 96, 0.2);
+            --modal-bg: linear-gradient(to bottom right, #ffffff, #f7fafc);
+            --modal-border: #e2e8f0;
+            --input-bg: #ffffff;
+            --input-border: #e2e8f0;
+            --input-focus-ring: #2ecc71;
+            --scrollbar-track: rgba(46, 204, 113, 0.1);
+            --scrollbar-thumb: rgba(46, 204, 113, 0.2);
+            --scrollbar-thumb-hover: rgba(46, 204, 113, 0.3);
+            --chart-text: #1a2b36;
+        }
+
+        /* Base Styles */
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 1.5rem;
+            background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Card Styles */
+        .dashboard-card, .p-6, .p-5, .col-span-2, .p-4, .p-3 {
+            background: var(--card-bg) !important;
+            border: 2px solid var(--card-border) !important;
+            border-radius: 0.75rem !important;
+            box-shadow: var(--card-shadow, none) !important;
+            transition: all 0.3s ease;
+        }
+        .dashboard-card:hover, .p-6:hover, .p-5:hover, .col-span-2:hover, .p-4:hover, .p-3:hover {
+            background: var(--card-hover-bg) !important;
+            box-shadow: 0 0 16px 2px rgba(46,204,113,0.18) !important;
+        }
+
+        /* Text Styles - Stronger contrast for light mode */
+        .text-primary { color: var(--text-primary) !important; font-weight: 600; }
+        .text-secondary { color: var(--text-secondary) !important; font-weight: 500; }
+        .text-muted { color: var(--text-muted) !important; font-weight: 500; }
+        h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; font-weight: 700; }
+
+        /* Chart Styles - Remove border and shadow from graph containers */
+        .chart-container, .h-32, .h-64, .h-\[300px\] {
+            background: var(--card-bg) !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0.75rem !important;
+            padding: 1.25rem !important;
+        }
+        .chart-container:hover, .h-32:hover, .h-64:hover, .h-\[300px\]:hover {
+            box-shadow: none !important;
+        }
+
+        /* For dark mode, keep original look for cards only */
+        :root[data-theme="dark"] .dashboard-card,
+        :root[data-theme="dark"] .p-6,
+        :root[data-theme="dark"] .p-5,
+        :root[data-theme="dark"] .col-span-2,
+        :root[data-theme="dark"] .p-4,
+        :root[data-theme="dark"] .p-3 {
+            border: 1px solid var(--card-border) !important;
+            box-shadow: none !important;
+        }
+
+        /* Table Styles */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .dashboard-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .dashboard-table td {
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .dashboard-table tr:hover {
+            background: var(--card-hover-bg);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            border: 1px solid var(--modal-border);
+            border-radius: 0.75rem;
+        }
+
+        .modal-input {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-primary);
+            border-radius: 0.375rem;
+        }
+
+        .modal-input:focus {
+            border-color: var(--input-focus-ring);
+            box-shadow: 0 0 0 2px var(--input-focus-ring);
+        }
+
+        /* Scrollbar Styles */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        *::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+            border: 2px solid var(--scrollbar-track);
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover);
+        }
+
+        /* Theme Transition */
+        * {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* Add specific styles for chart text */
+        .chart-text {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .chart-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Chart and box text overrides for both modes */
+        [data-theme="dark"] .chart-label,
+        [data-theme="dark"] .chart-text,
+        [data-theme="dark"] .text-primary,
+        [data-theme="dark"] .text-secondary,
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] h6 {
+            color: var(--chart-text) !important;
+        }
+        [data-theme="dark"] .dashboard-card *,
+        [data-theme="dark"] .chart-container *,
+        [data-theme="dark"] .p-6 *,
+        [data-theme="dark"] .p-5 *,
+        [data-theme="dark"] .col-span-2 *,
+        [data-theme="dark"] .p-4 *,
+        [data-theme="dark"] .p-3 * {
+            color: var(--chart-text) !important;
+        }
+        [data-theme="light"] .chart-label,
+        [data-theme="light"] .chart-text,
+        [data-theme="light"] .text-primary,
+        [data-theme="light"] .text-secondary,
+        [data-theme="light"] .text-muted,
+        [data-theme="light"] h1,
+        [data-theme="light"] h2,
+        [data-theme="light"] h3,
+        [data-theme="light"] h4,
+        [data-theme="light"] h5,
+        [data-theme="light"] h6 {
+            color: var(--chart-text) !important;
+        }
+        [data-theme="light"] .dashboard-card *,
+        [data-theme="light"] .chart-container *,
+        [data-theme="light"] .p-6 *,
+        [data-theme="light"] .p-5 *,
+        [data-theme="light"] .col-span-2 *,
+        [data-theme="light"] .p-4 *,
+        [data-theme="light"] .p-3 * {
+            color: var(--chart-text) !important;
+        }
+    </style>
+
     <!-- Main Content -->
-    <div class="min-h-screen p-6 bg-gradient-to-br from-gray-900 to-gray-800 font-inter">
+    <div class="dashboard-container">
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold text-white">User Management Dashboard</h1>
-                    <p class="text-gray-400">Overview of regular users and their activities</p>
+                    <h1 class="text-3xl font-bold text-primary">User Management Dashboard</h1>
+                    <p class="text-secondary">Overview of regular users and their activities</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="p-4 bg-white/10 backdrop-blur-lg rounded-xl">
-                        <div class="text-sm text-gray-400">Current Date</div>
-                        <div class="text-xl font-semibold text-white" id="currentDate">--</div>
+                    <div class="p-4 dashboard-card">
+                        <div class="text-sm text-secondary">Current Date</div>
+                        <div class="text-xl font-semibold text-primary" id="currentDate">--</div>
                     </div>
-                    <div class="p-4 bg-white/10 backdrop-blur-lg rounded-xl">
-                        <div class="text-sm text-gray-400">Weather</div>
+                    <div class="p-4 dashboard-card">
+                        <div class="text-sm text-secondary">Weather</div>
                         <div class="flex items-center space-x-2">
                             <i class="text-2xl text-yellow-400 fas fa-sun" id="weatherIcon"></i>
                             <div>
-                                <div class="text-xl font-semibold text-white" id="temperature">--°C</div>
-                                <div class="text-sm text-gray-400" id="weatherDesc">--</div>
+                                <div class="text-xl font-semibold text-primary" id="temperature">--°C</div>
+                                <div class="text-sm text-secondary" id="weatherDesc">--</div>
                             </div>
                         </div>
                     </div>
@@ -80,7 +323,7 @@ use App\Models\Task;
                         <i class="text-lg text-pink-400 fas fa-venus-mars"></i>
                     </div>
                 </div>
-                <div class="h-32">
+                <div class="h-40">
                     <canvas id="genderChart"></canvas>
                 </div>
             </div>
@@ -93,7 +336,7 @@ use App\Models\Task;
                         <i class="text-lg text-green-400 fas fa-chart-bar"></i>
                     </div>
                 </div>
-                <div class="h-32">
+                <div class="h-40">
                     <canvas id="ageChart"></canvas>
                 </div>
             </div>
@@ -106,7 +349,7 @@ use App\Models\Task;
                         <i class="text-lg text-purple-400 fas fa-graduation-cap"></i>
                     </div>
                 </div>
-                <div class="h-32">
+                <div class="h-40">
                     <canvas id="educationChart"></canvas>
                 </div>
             </div>
@@ -122,7 +365,7 @@ use App\Models\Task;
                         <i class="text-lg text-yellow-400 fas fa-tasks"></i>
                     </div>
                 </div>
-                <div class="h-64">
+                <div class="h-[332px]">
                     <canvas id="taskStatsChart"></canvas>
                 </div>
             </div>
@@ -135,7 +378,7 @@ use App\Models\Task;
                         <i class="text-lg text-blue-400 fas fa-chart-line"></i>
                     </div>
                 </div>
-                <div class="h-64">
+                <div class="h-[332px]">
                     <canvas id="activityChart"></canvas>
                 </div>
             </div>
@@ -151,7 +394,7 @@ use App\Models\Task;
                         <i class="text-lg text-green-400 fas fa-user-clock"></i>
                     </div>
                 </div>
-                <div class="h-[300px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);">
+                <div class="h-[390px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);">
                     <div class="space-y-2">
                         @forelse($users->where('last_login_at', '>=', now()->subDays(30))->sortByDesc('last_login_at') as $user)
                             <div class="flex items-center p-3 transition-colors rounded-lg bg-white/5 hover:bg-white/10">
@@ -204,7 +447,7 @@ use App\Models\Task;
                         <i class="text-lg text-purple-400 fas fa-check-circle"></i>
                     </div>
                 </div>
-                <div class="h-[300px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);">
+                <div class="h-[390px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);">
                     <div class="space-y-2">
                         @forelse($recentTasks as $task)
                             <div class="flex items-center p-3 transition-colors rounded-lg bg-white/5 hover:bg-white/10">
@@ -369,12 +612,16 @@ use App\Models\Task;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js DataLabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
     <!-- Dashboard Scripts -->
     <script>
         // Initialize charts with futuristic theme
-        Chart.defaults.color = '#9CA3AF';
-        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.color = '#E2E8F0';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.15)';
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.font.weight = '500';
 
         // Initial data from PHP variables
         const initialData = {
@@ -386,6 +633,104 @@ use App\Models\Task;
 
         console.log('Initial Task Stats:', initialData.taskStats);
 
+        // Chart.js color settings for both modes
+        function getChartTextColor() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            return theme === 'light' ? '#1a2b36' : '#F3F4F6';
+        }
+
+        // Helper to get datalabel color based on theme
+        function getDataLabelColor() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            return theme === 'light' ? '#1a2b36' : '#F3F4F6';
+        }
+
+        // Add datalabels plugin to all charts
+        Chart.register(window.ChartDataLabels);
+
+        // Update chart options for better readability
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getChartTextColor(),
+                        font: {
+                            weight: '600',
+                            size: 13
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                    titleColor: getChartTextColor(),
+                    bodyColor: getChartTextColor(),
+                    borderColor: '#2ecc71',
+                    borderWidth: 1,
+                    padding: 12,
+                    titleFont: {
+                        weight: '700',
+                        size: 13
+                    },
+                    bodyFont: {
+                        weight: '600',
+                        size: 12
+                    }
+                },
+                datalabels: {
+                    color: getDataLabelColor(),
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    anchor: 'end',
+                    align: 'top',
+                    clamp: true,
+                    display: true
+                }
+            }
+        };
+
+        // Update chart options for better readability
+        function updateAllChartTextColors() {
+            const color = getChartTextColor();
+            const datalabelColor = getDataLabelColor();
+            Object.values(charts).forEach(chart => {
+                if (chart.options.scales) {
+                    if (chart.options.scales.x) {
+                        chart.options.scales.x.ticks.color = color;
+                        chart.options.scales.x.grid.color = color + '33';
+                    }
+                    if (chart.options.scales.y) {
+                        chart.options.scales.y.ticks.color = color;
+                        chart.options.scales.y.grid.color = color + '33';
+                    }
+                }
+                if (chart.options.plugins) {
+                    if (chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+                        chart.options.plugins.legend.labels.color = color;
+                    }
+                    if (chart.options.plugins.tooltip) {
+                        chart.options.plugins.tooltip.titleColor = color;
+                        chart.options.plugins.tooltip.bodyColor = color;
+                        chart.options.plugins.tooltip.backgroundColor = (document.documentElement.getAttribute('data-theme') === 'dark') ? '#23272f' : '#fff';
+                    }
+                    if (chart.options.plugins.datalabels) {
+                        chart.options.plugins.datalabels.color = datalabelColor;
+                    }
+                }
+                chart.update();
+            });
+        }
+
+        // Listen for theme changes and update chart text colors
+        const observer = new MutationObserver(updateAllChartTextColors);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        window.addEventListener('DOMContentLoaded', updateAllChartTextColors);
+
+        // Update individual chart configurations
         const charts = {
             gender: new Chart(document.getElementById('genderChart').getContext('2d'), {
                 type: 'doughnut',
@@ -394,17 +739,23 @@ use App\Models\Task;
                     datasets: [{
                         data: [initialData.gender.male || 0, initialData.gender.female || 0],
                         backgroundColor: ['#3B82F6', '#EC4899'],
-                        borderWidth: 0
+                        borderWidth: 2,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
+                        ...commonChartOptions.plugins,
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: '#9CA3AF'
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 12
+                                },
+                                padding: 20
                             }
                         }
                     },
@@ -419,13 +770,15 @@ use App\Models\Task;
                         label: 'Users',
                         data: Object.values(initialData.age),
                         backgroundColor: '#10B981',
-                        borderRadius: 6
+                        borderRadius: 6,
+                        borderWidth: 2,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
+                        ...commonChartOptions.plugins,
                         legend: {
                             display: false
                         }
@@ -434,12 +787,32 @@ use App\Models\Task;
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
                             }
                         },
                         x: {
                             grid: {
-                                display: false
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
                             }
                         }
                     }
@@ -453,13 +826,15 @@ use App\Models\Task;
                         label: 'Users',
                         data: Object.values(initialData.education),
                         backgroundColor: '#6366F1',
-                        borderRadius: 6
+                        borderRadius: 6,
+                        borderWidth: 2,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
+                        ...commonChartOptions.plugins,
                         legend: {
                             display: false
                         }
@@ -468,12 +843,32 @@ use App\Models\Task;
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
                             }
                         },
                         x: {
                             grid: {
-                                display: false
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
                             }
                         }
                     }
@@ -490,17 +885,23 @@ use App\Models\Task;
                             initialData.taskStats.pending || 0
                         ],
                         backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
-                        borderWidth: 0
+                        borderWidth: 2,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
+                        ...commonChartOptions.plugins,
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: '#9CA3AF'
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 12
+                                },
+                                padding: 20
                             }
                         }
                     }
@@ -513,7 +914,7 @@ use App\Models\Task;
                     datasets: [{
                         label: 'Active Users',
                         data: [],
-                        borderColor: '#22d47b', // Neon green
+                        borderColor: '#22d47b',
                         backgroundColor: ctx => {
                             const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
                             gradient.addColorStop(0, 'rgba(34, 212, 123, 0.15)');
@@ -522,141 +923,54 @@ use App\Models\Task;
                         },
                         tension: 0.45,
                         fill: true,
+                        borderWidth: 3,
                         pointBackgroundColor: '#22d47b',
                         pointBorderColor: '#fff',
                         pointBorderWidth: 3,
                         pointRadius: 6,
-                        pointHoverRadius: 8,
-                        borderWidth: 4,
-                        pointHoverBackgroundColor: '#22d47b',
-                        pointHoverBorderColor: '#fff',
-                        pointHoverBorderWidth: 3,
-                        shadowOffsetX: 0,
-                        shadowOffsetY: 4,
-                        shadowBlur: 16,
-                        shadowColor: 'rgba(34, 212, 123, 0.7)'
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: '#22d47b',
-                            borderWidth: 1,
-                            padding: 14,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.parsed.y} active users`;
-                                }
-                            }
-                        },
-                        // Custom plugin for endpoint badge
-                        endpointBadge: {
-                            enabled: true
-                        }
-                    },
-                    layout: {
-                        padding: { left: 0, right: 0, top: 20, bottom: 0 }
+                        ...commonChartOptions.plugins,
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: { display: false },
-                            ticks: {
-                                color: '#b0b0b0',
-                                font: { size: 13, family: 'Inter, sans-serif' },
-                                padding: 10
+                            grid: {
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
                             },
-                            border: { display: false }
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
+                            }
                         },
                         x: {
-                            grid: { display: false },
-                            ticks: {
-                                color: '#b0b0b0',
-                                font: { size: 13, family: 'Inter, sans-serif' },
-                                padding: 10
+                            grid: {
+                                color: getChartTextColor(),
+                                drawBorder: false,
+                                lineWidth: 1
                             },
-                            border: { display: false }
+                            ticks: {
+                                color: getChartTextColor(),
+                                font: {
+                                    weight: '500',
+                                    size: 11
+                                },
+                                padding: 10
+                            }
                         }
-                    },
-                    interaction: { intersect: false, mode: 'index' },
-                    elements: {
-                        line: {
-                            borderWidth: 4,
-                            borderColor: '#22d47b',
-                            fill: true
-                        },
-                        point: {
-                            radius: 6,
-                            backgroundColor: '#22d47b',
-                            borderColor: '#fff',
-                            borderWidth: 3
-                        }
-                    },
-                    animation: {
-                        duration: 900,
-                        easing: 'easeOutQuart'
                     }
-                },
-                plugins: [{
-                    // Custom plugin for endpoint badge
-                    id: 'endpointBadge',
-                    afterDatasetsDraw(chart, args, options) {
-                        if (!options.enabled) return;
-                        const { ctx, data, chartArea } = chart;
-                        const dataset = chart.getDatasetMeta(0);
-                        if (!dataset || !dataset.data.length) return;
-                        const lastPoint = dataset.data[dataset.data.length - 1];
-                        const value = data.datasets[0].data[data.datasets[0].data.length - 1];
-                        ctx.save();
-                        ctx.font = 'bold 12px Inter, sans-serif';
-                        ctx.textAlign = 'left';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillStyle = '#22d47b';
-                        ctx.strokeStyle = '#222';
-                        ctx.lineWidth = 2;
-                        // Draw rounded badge
-                        const badgeText = 'JUN'; // You can make this dynamic if needed
-                        const badgeWidth = ctx.measureText(badgeText).width + 18;
-                        const badgeHeight = 24;
-                        const badgeX = lastPoint.x + 12;
-                        const badgeY = lastPoint.y - badgeHeight / 2;
-                        ctx.beginPath();
-                        ctx.moveTo(badgeX + 8, badgeY);
-                        ctx.lineTo(badgeX + badgeWidth - 8, badgeY);
-                        ctx.quadraticCurveTo(badgeX + badgeWidth, badgeY, badgeX + badgeWidth, badgeY + 8);
-                        ctx.lineTo(badgeX + badgeWidth, badgeY + badgeHeight - 8);
-                        ctx.quadraticCurveTo(badgeX + badgeWidth, badgeY + badgeHeight, badgeX + badgeWidth - 8, badgeY + badgeHeight);
-                        ctx.lineTo(badgeX + 8, badgeY + badgeHeight);
-                        ctx.quadraticCurveTo(badgeX, badgeY + badgeHeight, badgeX, badgeY + badgeHeight - 8);
-                        ctx.lineTo(badgeX, badgeY + 8);
-                        ctx.quadraticCurveTo(badgeX, badgeY, badgeX + 8, badgeY);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.stroke();
-                        ctx.fillStyle = '#fff';
-                        ctx.fillText(badgeText, badgeX + 9, badgeY + badgeHeight / 2);
-                        ctx.restore();
-                    }
-                }, {
-                    // Glow effect for line
-                    id: 'glowLine',
-                    beforeDraw(chart) {
-                        const ctx = chart.ctx;
-                        ctx.save();
-                        ctx.shadowColor = '#22d47b';
-                        ctx.shadowBlur = 16;
-                    },
-                    afterDraw(chart) {
-                        chart.ctx.restore();
-                    }
-                }]
+                }
             })
         };
 
@@ -858,39 +1172,23 @@ use App\Models\Task;
                 });
             }
         }
+
+        // Update chart colors based on theme
+        function getChartColors() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            return {
+                blue: theme === 'dark' ? '#3b82f6' : '#2ecc71',
+                purple: theme === 'dark' ? '#8b5cf6' : '#27ae60',
+                green: theme === 'dark' ? '#22d47b' : '#2ecc71',
+                pink: theme === 'dark' ? '#ec4899' : '#27ae60',
+                yellow: theme === 'dark' ? '#eab308' : '#f1c40f',
+                gradientStart: theme === 'dark' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(46, 204, 113, 0.2)',
+                gradientEnd: theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(39, 174, 96, 0.2)'
+            };
+        }
+
+        // Update your existing chart configurations to use the theme colors
+        // ... rest of your existing JavaScript code ...
     </script>
-
-    <style>
-        /* Font Family */
-        .font-inter {
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Firefox */
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
-        }
-
-        /* Chrome, Edge, and Safari */
-        *::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        *::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        *::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        *::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-    </style>
 </x-adminlayout>
 

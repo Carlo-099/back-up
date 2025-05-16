@@ -1,305 +1,511 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ Auth::check() && Auth::user()->reference && Auth::user()->reference->settings ? Auth::user()->reference->settings->theme : 'light' }}">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ Auth::check() && Auth::user()->reference && Auth::user()->reference->settings ? Auth::user()->reference->settings->theme : 'dark' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart to do lists</title>
-
-    <!-- Google Fonts - Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Smart to do list - Admin</title>
     @vite('resources/css/app.css')
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
+    <!-- AOS Animate On Scroll CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* Apply Inter font to all elements */
-        * {
-            font-family: 'Inter', sans-serif;
+        /* Theme Variables */
+        :root[data-theme="dark"] {
+            --primary-color: #00eaff;
+            --secondary-color: #1a6cff;
+            --bg-color: #23272f;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --text-color: #f3f4f6;
+            --text-secondary: #cbefff;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --hover-bg: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --gradient-start: #00eaff;
+            --gradient-end: #1a6cff;
         }
 
         :root[data-theme="light"] {
-            --bg-primary: #ffffff;
-            --bg-secondary: #48A6A7;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --border-color: #dee2e6;
-            --accent-color: #0d6efd;
-            --hover-color: #e9ecef;
-
-            /* Light Theme (my second option) */
-            --topnavbar-bg: #9FB3DF;
-            --sidenavbar-bg: #9EC6F3;
-            --menubutton-bg:#BDDDE4;
-            --menubuttonhover-bg: #ffffff;
-        }
-
-        :root[data-theme="dark"] {
-            --bg-primary: #212529;
-            --bg-secondary: #343a40;
-            --text-primary: #f8f9fa;
-            --text-secondary: #adb5bd;
-            --border-color: #495057;
-            --accent-color: #0d6efd;
-            --hover-color: #495057;
-
-            /* Dark Theme (my second option) */
-            --topnavbar-bg: #2C3E50;
-            --sidenavbar-bg: #34495E;
-            --menubutton-bg: #3498DB;
-            --menubuttonhover-bg: #2980B9;
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --bg-color: #f0f7f4;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.2);
+            --hover-bg: rgba(46, 204, 113, 0.1);
+            --shadow-color: rgba(46, 204, 113, 0.15);
+            --gradient-start: #2ecc71;
+            --gradient-end: #27ae60;
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .navbar {
-            background-color: var(--topnavbar-bg) !important;
-            border-bottom: 1px solid var(--border-color);
+        .floating-svg {
+            position: absolute;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+            transition: transform 1s cubic-bezier(.23,1.01,.32,1);
         }
 
-        .navbar-brand, .nav-link {
-            color: var(--text-primary) !important;
+        [data-theme="dark"] .floating-svg-1 { fill: var(--primary-color); }
+        [data-theme="dark"] .floating-svg-2 { fill: var(--secondary-color); }
+        [data-theme="dark"] .floating-svg-3 { fill: #fff; }
+
+        [data-theme="light"] .floating-svg-1 { fill: #2ecc71; }
+        [data-theme="light"] .floating-svg-2 { fill: #27ae60; }
+        [data-theme="light"] .floating-svg-3 { fill: #34495e; }
+
+        .floating-svg-1 { top: 10%; left: 5%; width: 80px; animation: float1 8s ease-in-out infinite alternate; }
+        .floating-svg-2 { top: 60%; left: 80%; width: 60px; animation: float2 10s ease-in-out infinite alternate; }
+        .floating-svg-3 { top: 40%; left: 50%; width: 100px; animation: float3 12s ease-in-out infinite alternate; }
+
+        @keyframes float1 { 0% { transform: translateY(0) rotate(0deg);} 100% { transform: translateY(-40px) rotate(20deg);} }
+        @keyframes float2 { 0% { transform: translateY(0) scale(1);} 100% { transform: translateY(30px) scale(1.1);} }
+        @keyframes float3 { 0% { transform: translateY(0) rotate(0deg);} 100% { transform: translateY(-20px) rotate(-15deg);} }
+
+        .navbar {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            height: 72px;
+            box-shadow: 0 2px 8px #0002;
+        }
+
+        .navbar-content {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            letter-spacing: 2px;
+        }
+
+        .navbar-logo span {
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            transition: max-height 0.3s, opacity 0.3s;
+            align-items: center;
+        }
+
+        .navbar-welcome {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .navbar-welcome-text {
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar-welcome-text i {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .navbar-logout-form {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-logout-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 9999px;
+            padding: 0.6rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar-logout-btn:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+            box-shadow: 0 0 16px var(--shadow-color);
+        }
+
+        .navbar-logout-btn i {
+            font-size: 1.1rem;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 72px;
         }
 
         .sidebar {
-            background-color: var(--sidenavbar-bg);
+            width: 280px;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
             border-right: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            position: fixed;
+            height: calc(100vh - 72px);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 1rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         .menu-item {
-            color: var(--text-primary);
-            transition: background-color 0.2s;
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            border: 1px solid transparent;
         }
 
         .menu-item:hover {
-            background-color: var(--hover-color);
-        }
-
-        .card {
-            background-color: var(--bg-primary);
+            background: var(--hover-bg);
             border-color: var(--border-color);
         }
 
-        .card-header {
-            background-color: var(--bg-secondary);
-            border-bottom-color: var(--border-color);
+        .menu-item.active {
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            border: none;
         }
 
-        .table {
-            color: var(--text-primary);
+        .menu-item i {
+            width: 24px;
+            text-align: center;
+            margin-right: 0.75rem;
         }
 
-        .table thead th {
-            background-color: var(--bg-secondary);
-            border-color: var(--border-color);
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .table td {
-            border-color: var(--border-color);
+        .content-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
         }
 
-        .form-control {
-            background-color: var(--bg-primary);
-            border-color: var(--border-color);
-            color: var(--text-primary);
+        .btn {
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 12px var(--shadow-color);
         }
 
-        .form-control:focus {
-            background-color: var(--bg-primary);
-            border-color: var(--accent-color);
-            color: var(--text-primary);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow-color);
         }
 
-        .btn-outline-secondary {
-            color: var(--text-secondary);
-            border-color: var(--border-color);
+        .input-field {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
         }
 
-        .btn-outline-secondary:hover {
-            background-color: var(--hover-color);
-            color: var(--text-primary);
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--shadow-color);
         }
 
-        .modal-content {
-            background-color: var(--bg-primary);
-            border-color: var(--border-color);
-        }
-
-        .modal-header {
-            border-bottom-color: var(--border-color);
-        }
-
-        .modal-footer {
-            border-top-color: var(--border-color);
-        }
-
-        .dropdown-menu {
-            background-color: var(--bg-primary);
-            border-color: var(--border-color);
-        }
-
-        .dropdown-item {
-            color: var(--text-primary);
-        }
-
-        .dropdown-item:hover {
-            background-color: var(--hover-color);
-            color: var(--text-primary);
-        }
-
-        .alert {
-            background-color: var(--bg-secondary);
-            border-color: var(--border-color);
-            color: var(--text-primary);
-        }
-    </style>
-    <script>
-        // Function to apply theme from localStorage or server-side setting
-        function applyTheme() {
-            // First check if there's a theme in localStorage
-            const savedTheme = localStorage.getItem('theme');
-
-            if (savedTheme) {
-                // Apply the theme from localStorage
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            } else {
-                // If no theme in localStorage, use the server-side theme
-                const serverTheme = document.documentElement.getAttribute('data-theme');
-                if (serverTheme) {
-                    // Save the server-side theme to localStorage for consistency
-                    localStorage.setItem('theme', serverTheme);
-                }
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
             }
         }
 
-        // Run on page load
-        document.addEventListener('DOMContentLoaded', applyTheme);
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .navbar-hamburger {
+                display: flex;
+            }
+        }
 
-        // Run when theme changes
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'data-theme') {
-                    // Theme changed, no additional action needed
-                }
+        /* Theme Transition */
+        * {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+    </style>
+    <script>
+        // Theme handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for theme in localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+
+            // Listen for theme changes from settings
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'data-theme') {
+                        const newTheme = document.documentElement.getAttribute('data-theme');
+                        localStorage.setItem('theme', newTheme);
+                    }
+                });
             });
-        });
 
-        observer.observe(document.documentElement, { attributes: true });
+            observer.observe(document.documentElement, { attributes: true });
+        });
     </script>
 </head>
 <body>
-    <div class="min-h-screen" style="background-color: var(--bg-primary);">
-        <!-- Top Navigation Bar -->
+    <!-- Floating SVG Decorative Elements -->
+    <svg class="floating-svg floating-svg-1" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#00eaff"/></svg>
+    <svg class="floating-svg floating-svg-2" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="20" fill="#1a6cff"/></svg>
+    <svg class="floating-svg floating-svg-3" viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="#fff"/></svg>
 
-        <nav class="shadow-md" style="background-color: var(--topnavbar-bg);">
-            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-
-                        <!-- Logo -->
-                        <div class="flex items-center">
-                            <a href="/" class="flex items-center">
-                                <img src="/images/logo.png" alt="Logo" class="w-8 h-8 mr-2">
-                                <span class="text-xl font-bold" style="color: var(--text-primary);">Smart to do list</span>
-                            </a>
+    <!-- Navbar -->
+    <nav class="navbar" data-aos="fade-down" data-aos-duration="900">
+        <div class="navbar-content">
+            <div class="navbar-logo" data-aos="fade-right" data-aos-delay="200">
+                Smart<span style="color: var(--primary-color);"> . </span>To Do List
+            </div>
+            <div id="navbar-hamburger" class="navbar-hamburger" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div id="navbar-links" class="navbar-links">
+                @auth
+                    <div class="navbar-welcome" data-aos="fade-down" data-aos-delay="300">
+                        <div class="navbar-welcome-text">
+                            <i class="fas fa-user-circle"></i>
+                            Welcome, {{ Auth::user()->name }}
                         </div>
-                    </div>
-
-                    <!-- Right side -->
-                    <div class="flex items-center space-x-4">
-                        @auth
-                            <span style="color: var(--text-primary);">Hi, {{ Auth::user()->name }}</span>
-
-                            <!-- Notification Button -->
-                            <button class="relative p-2 rounded-full" style="color: var(--text-primary);">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        <form action="{{ route('logout') }}" method="POST" class="navbar-logout-form" data-aos="fade-down" data-aos-delay="400">
+                            @csrf
+                            <button type="submit" class="navbar-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
                             </button>
-                            <form action="{{ route('logout') }}" method="POST" class="m-0">
-                                @csrf
-                                <button class="btn">Logout</button>
-                            </form>
-                        @endauth
+                        </form>
                     </div>
-                </div>
-            </div>
-        </nav>
-
-        <div class="flex">
-            <!-- Sidebar -->
-            <div class="w-64 min-h-screen shadow-md sidebar">
-                <div class="p-4">
-                    <!-- User Profile Section -->
-                    @auth
-                        <div class="flex flex-col items-center mb-6">
-                            <div class="w-24 h-24 mb-3 overflow-hidden rounded-full">
-                                @php
-                                    $user = Auth::user();
-                                    $reference = $user->reference;
-                                    $settings = $reference ? $reference->settings : null;
-
-                                    $profilePicture = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=0D9488&color=fff";
-
-                                    if ($settings && $settings->profile_picture) {
-                                        // Check if the path already includes the directory
-                                        if (strpos($settings->profile_picture, 'uploads/profile_pictures/') === 0) {
-                                            $profilePicture = asset($settings->profile_picture);
-                                        } else {
-                                            $profilePicture = asset('uploads/profile_pictures/' . $settings->profile_picture);
-                                        }
-                                    }
-                                @endphp
-                                <img src="{{ $profilePicture }}"
-                                     alt="Profile"
-                                     class="object-cover w-full h-full">
-                            </div>
-                            <h3 class="text-lg font-semibold" style="color: var(--text-primary);">{{ Auth::user()->name }}</h3>
-                        </div>
-                    @endauth
-
-                    <h2 class="mb-4 text-lg font-semibold" style="color: var(--text-primary);">Menu</h2>
-                    <nav class="space-y-2">
-                        @auth
-                            <a href="{{ route('user-manage') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-users-cog"></i> Manage User
-                            </a>
-                            <a href="{{ route('send-announcement') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-bullhorn"></i> User Announcement
-                            </a>
-                            <a href="{{ route('read-feedback') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-comments"></i> Read Feedbacks
-                            </a>
-
-                            <hr class="my-4" style="border-color: var(--border-color);">
-
-                            <a href={{ route('AdminSetting') }} class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-cog"></i> Settings
-                            </a>
-                        @else
-                            <a href="{{ route('show.login') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-sign-in-alt"></i> Login
-                            </a>
-                            <a href="{{ route('show.register') }}" class="block px-4 py-2 rounded-md menu-item hover:bg-gray-100">
-                                <i class="mr-2 fas fa-user-plus"></i> Register
-                            </a>
-                        @endauth
-                    </nav>
-                </div>
-            </div>
-
-            <div class="flex-1 w-full min-h-screen">
-                <main class="w-full h-full">
-                    {{ $slot }}
-                </main>
+                @endauth
             </div>
         </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" data-aos="fade-right" data-aos-duration="1000">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Admin Panel</h2>
+                @auth
+                    <div class="profile-section">
+                        <div class="profile-picture">
+                            @php
+                                $user = Auth::user();
+                                $reference = $user->reference;
+                                $settings = $reference ? $reference->settings : null;
+
+                                $profilePicture = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=0D9488&color=fff";
+
+                                if ($settings && $settings->profile_picture) {
+                                    if (strpos($settings->profile_picture, 'uploads/profile_pictures/') === 0) {
+                                        $profilePicture = asset($settings->profile_picture);
+                                    } else {
+                                        $profilePicture = asset('uploads/profile_pictures/' . $settings->profile_picture);
+                                    }
+                                }
+                            @endphp
+                            <img src="{{ $profilePicture }}" alt="Profile Picture" class="profile-img">
+                        </div>
+                        <div class="profile-name">{{ Auth::user()->name }}</div>
+                        <div class="profile-role">Administrator</div>
+                    </div>
+                @endauth
+            </div>
+
+            <nav class="space-y-2">
+                @auth
+                    <a href="{{ route('user-manage') }}" class="menu-item {{ request()->routeIs('user-manage') ? 'active' : '' }}">
+                        <i class="fas fa-users-cog"></i> Manage Users
+                    </a>
+                    <a href="{{ route('send-announcement') }}" class="menu-item {{ request()->routeIs('send-announcement') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i> Announcements
+                    </a>
+                    <a href="{{ route('read-feedback') }}" class="menu-item {{ request()->routeIs('read-feedback') ? 'active' : '' }}">
+                        <i class="fas fa-comments"></i> Feedbacks
+                    </a>
+
+                    <hr class="my-4" style="border-color: var(--border-color);">
+
+                    <a href="{{ route('AdminSetting') }}" class="menu-item {{ request()->routeIs('AdminSetting') ? 'active' : '' }}">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                @endauth
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{ $slot }}
+        </main>
     </div>
+
+    <!-- AOS Animate On Scroll JS -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('navbar-hamburger');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768) {
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isClickOnHamburger = hamburger.contains(event.target);
+
+                    if (!isClickInsideSidebar && !isClickOnHamburger && sidebar.classList.contains('open')) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

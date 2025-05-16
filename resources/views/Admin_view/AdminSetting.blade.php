@@ -165,4 +165,13 @@
         });
     </script>
 
+    <style>
+    /* Make disabled select text readable in dark mode */
+    html[data-theme="dark"] select:disabled,
+    html[data-theme="dark"] option:disabled {
+        color: #b0b0b0 !important;
+        background-color: #222 !important;
+    }
+    </style>
+
 </x-adminlayout>
