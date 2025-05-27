@@ -51,6 +51,9 @@ class SettingController extends Controller
         }
 
         $settings = Setting::find($reference->settings_id);
+        if (!$settings) {
+            return redirect()->back()->with('error', 'Settings not found');
+        }
 
         // Validate the request
         $validator = Validator::make($request->all(), [
@@ -59,7 +62,7 @@ class SettingController extends Controller
             'change_password' => 'nullable|min:6',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'theme' => 'nullable|in:light,dark',
-            'notification' => 'nullable|in:0,1',
+            'notification' => 'required|in:0,1',
             'age' => 'nullable|integer|min:13',
             'gender' => 'nullable|in:male,female',
             'educational_level' => 'nullable|in:elementary,high school,senior high,college',
@@ -72,61 +75,67 @@ class SettingController extends Controller
                 ->withInput();
         }
 
-        // Update user data if email or password is provided
-        if ($request->filled('change_email')) {
-            User::where('id', $user->id)->update(['email' => $request->change_email]);
-        }
-
-        if ($request->filled('change_password')) {
-            // Verify current password before allowing password change
-            if (!Hash::check($request->current_password, $user->password)) {
-                return redirect()->back()
-                    ->withErrors(['current_password' => 'The current password is incorrect.'])
-                    ->withInput();
-            }
-            // Get the user model directly to avoid double hashing
-            $userModel = User::find($user->id);
-            $userModel->password = $request->change_password; // The model will hash this automatically
-            $userModel->save();
-            \Illuminate\Support\Facades\Log::info('Password changed for user: ' . $user->id);
-        }
-
-        // Update user profile fields
-        $user = User::find($user->id);
-        $user->age = $request->input('age', $user->age);
-        $user->gender = $request->input('gender', $user->gender);
-        $user->educational_level = $request->input('educational_level', $user->educational_level);
-        $user->save();
-
         // Update settings
-        if ($request->has('change_email')) {
-            $settings->change_email = $request->change_email;
-        }
+        try {
+            // Update notification setting
+            $settings->notification = $request->notification === '1';
+            \Illuminate\Support\Facades\Log::info('Updating notification setting', [
+                'old_value' => $settings->getOriginal('notification'),
+                'new_value' => $settings->notification,
+                'request_value' => $request->notification
+            ]);
 
-        if ($request->has('change_password')) {
-            $settings->change_password = $request->change_password;
-        }
+            // Update other settings if provided
+            if ($request->has('theme')) {
+                $settings->theme = $request->theme;
+            }
 
-        if ($request->has('profile_picture')) {
-            // Handle file upload
+            if ($request->filled('change_email')) {
+                $settings->change_email = $request->change_email;
+                User::where('id', $user->id)->update(['email' => $request->change_email]);
+            }
+
+            if ($request->filled('change_password')) {
+                if (!Hash::check($request->current_password, $user->password)) {
+                    return redirect()->back()
+                        ->withErrors(['current_password' => 'The current password is incorrect.'])
+                        ->withInput();
+                }
+                $userModel = User::find($user->id);
+                $userModel->password = $request->change_password;
+                $userModel->save();
+                $settings->change_password = $request->change_password;
+            }
+
             if ($request->hasFile('profile_picture')) {
                 $file = $request->file('profile_picture');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('uploads/profile_pictures'), $filename);
                 $settings->profile_picture = 'uploads/profile_pictures/' . $filename;
             }
+
+            // Update user profile fields
+            $user->age = $request->input('age', $user->age);
+            $user->gender = $request->input('gender', $user->gender);
+            $user->educational_level = $request->input('educational_level', $user->educational_level);
+            $user->save();
+
+            // Save all settings
+            $settings->save();
+
+            \Illuminate\Support\Facades\Log::info('Settings updated successfully', [
+                'user_id' => $user->id,
+                'settings_id' => $settings->id,
+                'notification' => $settings->notification
+            ]);
+
+            return redirect()->back()->with('success', 'Settings updated successfully');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error updating settings', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id
+            ]);
+            return redirect()->back()->with('error', 'Error updating settings. Please try again.');
         }
-
-        if ($request->has('theme')) {
-            $settings->theme = $request->theme;
-        }
-
-        if ($request->has('notification')) {
-            $settings->notification = $request->notification == '1';
-        }
-
-        $settings->save();
-
-        return redirect()->back()->with('success', 'Settings updated successfully');
     }
 }

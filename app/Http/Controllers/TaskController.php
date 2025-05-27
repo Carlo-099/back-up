@@ -214,4 +214,37 @@ class TaskController extends Controller
             ], 500);
         }
     }
+
+    public function complete($id)
+    {
+        try {
+            $task = Task::findOrFail($id);
+
+            // Check if the user owns this task
+            if ($task->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            // Update the task status to complete
+            $task->status = 'complete';
+            $task->save();
+
+            // Update status counts
+            Status::updateCounts();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task marked as complete'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Task completion error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error completing task: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

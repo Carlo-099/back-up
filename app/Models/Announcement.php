@@ -14,8 +14,15 @@ class Announcement extends Model
     protected $fillable = [
         'user_id',
         'message_anounce',
+        'is_public',
         'created_at',
         'updated_at'
+    ];
+
+    protected $casts = [
+        'is_public' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
     public function user()

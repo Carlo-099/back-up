@@ -11,11 +11,17 @@ class Setting extends Model
         'change_password',
         'profile_picture',
         'theme',
-        'notification'
+        'notification',
+        'notification_announcements',
+        'notification_admin_responses',
+        'notification_tasks'
     ];
 
     protected $casts = [
-        'notification' => 'boolean'
+        'notification' => 'boolean',
+        'notification_announcements' => 'boolean',
+        'notification_admin_responses' => 'boolean',
+        'notification_tasks' => 'boolean'
     ];
 
     public function references()

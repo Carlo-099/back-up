@@ -13,6 +13,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ProductivityInsightController;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -91,10 +92,49 @@ Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+Route::post('/tasks/{id}/complete', [TaskController::class, 'complete'])->name('tasks.complete')->middleware('auth');
 
 // Notification-related route
 Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');
 
 // Announcement Routes
 Route::get('/announcement/{id}', [App\Http\Controllers\AnnouncementController::class, 'show'])->name('announcement.show')->middleware('auth');
+
+// Notification API Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/api/notification-status', function () {
+        $user = Auth::user();
+        $reference = \App\Models\Reference::where('user_id', $user->id)->first();
+        $settings = $reference ? \App\Models\Setting::find($reference->settings_id) : null;
+        return response()->json([
+            'enabled' => $settings ? $settings->notification : true
+        ]);
+    });
+
+    Route::get('/api/notifications', function () {
+        $user = Auth::user();
+        $reference = \App\Models\Reference::where('user_id', $user->id)->first();
+        $settings = $reference ? \App\Models\Setting::find($reference->settings_id) : null;
+
+        if (!$settings || !$settings->notification) {
+            return response()->json(['notifications' => []]);
+        }
+
+        $notifications = \App\Models\Notification::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($notification) {
+                return [
+                    'id' => $notification->id,
+                    'type' => $notification->type,
+                    'message' => $notification->message,
+                    'status' => $notification->status,
+                    'created_at' => $notification->created_at->diffForHumans()
+                ];
+            });
+
+        return response()->json(['notifications' => $notifications]);
+    });
+});
 

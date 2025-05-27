@@ -57,14 +57,18 @@ class FeedbackController extends Controller
         try {
             DB::beginTransaction();
 
-            // Use update() instead of save()
+            // Update both admin_response and reset is_read
             $updated = Feedback::where('feedback_id', $feedbackId)
-                ->update(['admin_response' => $request->admin_response]);
+                ->update([
+                    'admin_response' => $request->admin_response,
+                    'is_read' => false // Reset is_read when new response is added
+                ]);
 
             Log::info('Update attempt result', [
                 'updated' => $updated,
                 'feedback_id' => $feedbackId,
-                'response' => $request->admin_response
+                'response' => $request->admin_response,
+                'is_read_reset' => true
             ]);
 
             if ($updated) {
@@ -101,20 +105,43 @@ class FeedbackController extends Controller
     public function markAsRead($feedbackId)
     {
         try {
+            Log::info('Attempting to mark feedback as read', [
+                'feedback_id' => $feedbackId,
+                'user_id' => Auth::id()
+            ]);
+
             $feedback = Feedback::where('feedback_id', $feedbackId)
                 ->where('user_id', Auth::id())
                 ->first();
 
             if ($feedback) {
+                Log::info('Found feedback, current read status', [
+                    'feedback_id' => $feedbackId,
+                    'current_is_read' => $feedback->is_read
+                ]);
+
                 $feedback->is_read = true;
-                $feedback->save();
+                $saved = $feedback->save();
+
+                Log::info('Updated feedback read status', [
+                    'feedback_id' => $feedbackId,
+                    'save_success' => $saved,
+                    'new_is_read' => $feedback->is_read
+                ]);
+
                 return response()->json(['success' => true]);
             }
+
+            Log::warning('Feedback not found for marking as read', [
+                'feedback_id' => $feedbackId,
+                'user_id' => Auth::id()
+            ]);
 
             return response()->json(['success' => false, 'message' => 'Feedback not found'], 404);
         } catch (\Exception $e) {
             Log::error('Error marking feedback as read', [
                 'error' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString(),
                 'feedback_id' => $feedbackId
             ]);
             return response()->json(['success' => false, 'message' => 'An error occurred'], 500);

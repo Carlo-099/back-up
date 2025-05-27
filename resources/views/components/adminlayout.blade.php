@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ Auth::check() && Auth::user()->reference && Auth::user()->reference->settings ? Auth::user()->reference->settings->theme : 'dark' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ Auth::check() && Auth::user()->is_admin && Auth::user()->reference && Auth::user()->reference->settings ? Auth::user()->reference->settings->theme : 'dark' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,11 +92,10 @@
 
         .navbar-content {
             width: 100%;
-            max-width: 1200px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 2rem;
+            padding: 0 1rem;
             position: relative;
         }
 
@@ -105,6 +104,7 @@
             font-weight: bold;
             color: var(--text-color);
             letter-spacing: 2px;
+            padding-left: 1rem;
         }
 
         .navbar-logo span {
@@ -116,6 +116,7 @@
             gap: 2rem;
             transition: max-height 0.3s, opacity 0.3s;
             align-items: center;
+            padding-right: 1rem;
         }
 
         .navbar-welcome {
@@ -359,22 +360,244 @@
         * {
             transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
-    </style>
-    <script>
-        // Theme handling
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for theme in localStorage
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
+
+        .navbar-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            padding: 0;
+            background: transparent;
+            border: none;
+            z-index: 1000;
+        }
+
+        .navbar-hamburger span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--text-color);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .navbar-hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar-hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-hamburger {
+                display: flex;
             }
 
-            // Listen for theme changes from settings
+            .navbar-links {
+                position: fixed;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px var(--shadow-color);
+            }
+
+            .navbar-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .navbar-welcome {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .navbar-welcome-text {
+                width: 100%;
+                padding: 0.5rem 0;
+            }
+
+            .navbar-logout-form {
+                width: 100%;
+            }
+
+            .navbar-logout-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 72px;
+                bottom: 0;
+                width: 280px;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .content-card {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-logo {
+                font-size: 1.25rem;
+            }
+
+            .content-card {
+                padding: 0.75rem;
+            }
+
+            .profile-picture {
+                width: 80px;
+                height: 80px;
+            }
+
+            .profile-name {
+                font-size: 1rem;
+            }
+
+            .profile-role {
+                font-size: 0.75rem;
+            }
+
+            .menu-item {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Responsive Typography */
+        @media (max-width: 768px) {
+            html {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 12px;
+            }
+        }
+
+        /* Responsive Tables */
+        @media (max-width: 768px) {
+            .table-responsive {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+
+        /* Responsive Forms */
+        @media (max-width: 768px) {
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .input-field {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Responsive Images */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Responsive Grid System */
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+    <script>
+        // Theme handling for admin only
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for admin theme in localStorage
+            const savedAdminTheme = localStorage.getItem('adminTheme');
+            if (savedAdminTheme) {
+                document.documentElement.setAttribute('data-theme', savedAdminTheme);
+            }
+
+            // Listen for theme changes from admin settings
             const observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.attributeName === 'data-theme') {
                         const newTheme = document.documentElement.getAttribute('data-theme');
-                        localStorage.setItem('theme', newTheme);
+                        localStorage.setItem('adminTheme', newTheme); // Use admin-specific key
                     }
                 });
             });
@@ -486,25 +709,43 @@
         // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
             const hamburger = document.getElementById('navbar-hamburger');
+            const navbarLinks = document.getElementById('navbar-links');
             const sidebar = document.querySelector('.sidebar');
 
             if (hamburger) {
                 hamburger.addEventListener('click', function() {
-                    sidebar.classList.toggle('open');
+                    this.classList.toggle('active');
+                    navbarLinks.classList.toggle('active');
+                    if (sidebar) {
+                        sidebar.classList.toggle('open');
+                    }
                 });
             }
 
-            // Close sidebar when clicking outside on mobile
+            // Close mobile menu when clicking outside
             document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768) {
-                    const isClickInsideSidebar = sidebar.contains(event.target);
-                    const isClickOnHamburger = hamburger.contains(event.target);
-
-                    if (!isClickInsideSidebar && !isClickOnHamburger && sidebar.classList.contains('open')) {
-                        sidebar.classList.remove('open');
-                    }
+                if (!event.target.closest('.navbar-hamburger') &&
+                    !event.target.closest('.navbar-links') &&
+                    !event.target.closest('.sidebar')) {
+                    if (hamburger) hamburger.classList.remove('active');
+                    if (navbarLinks) navbarLinks.classList.remove('active');
+                    if (sidebar) sidebar.classList.remove('open');
                 }
             });
+
+            // Handle sidebar toggle on mobile
+            if (sidebar) {
+                const menuItems = sidebar.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (window.innerWidth <= 768) {
+                            sidebar.classList.remove('open');
+                            if (hamburger) hamburger.classList.remove('active');
+                            if (navbarLinks) navbarLinks.classList.remove('active');
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>

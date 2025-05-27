@@ -105,12 +105,12 @@
                     document.documentElement.setAttribute('data-theme', selectedTheme);
 
                     // Save theme preference to localStorage for immediate effect
-                    localStorage.setItem('theme', selectedTheme);
+                    localStorage.setItem('adminTheme', selectedTheme);
                 });
             }
 
             // Check for theme in localStorage on page load
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('adminTheme');
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
                 if (themeSelect) {
@@ -155,7 +155,7 @@
                     const serverTheme = document.documentElement.getAttribute('data-theme');
                     if (serverTheme) {
                         document.documentElement.setAttribute('data-theme', serverTheme);
-                        localStorage.setItem('theme', serverTheme);
+                        localStorage.setItem('adminTheme', serverTheme);
                         if (themeSelect) {
                             themeSelect.value = serverTheme;
                         }

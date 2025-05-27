@@ -36,6 +36,7 @@ class AnnouncementController extends Controller
         $announcement = new Announcement();
         $announcement->user_id = Auth::id();
         $announcement->message_anounce = $validated['announcement'];
+        $announcement->is_public = true; // Set announcements as public by default
         $announcement->save();
 
         return redirect()->back()->with('success', 'Announcement sent successfully!');

@@ -2,22 +2,22 @@
             <!-- Main Content -->
 
 
-                            <h2 class="mb-6 text-xl font-semibold text-gray-800">Settings</h2>
+                            <h2 class="mb-6 text-xl font-semibold theme-text">Settings</h2>
 
                             @if(session('success'))
-                                <div class="p-4 mb-4 text-green-700 bg-green-100 rounded-md">
+                                <div class="p-4 mb-4 bg-green-100 rounded-md theme-text">
                                     {{ session('success') }}
                                 </div>
                             @endif
 
                             @if(session('error'))
-                                <div class="p-4 mb-4 text-red-700 bg-red-100 rounded-md">
+                                <div class="p-4 mb-4 bg-red-100 rounded-md theme-text">
                                     {{ session('error') }}
                                 </div>
                             @endif
 
                             @if($errors->any())
-                                <div class="p-4 mb-4 text-red-700 bg-red-100 rounded-md">
+                                <div class="p-4 mb-4 bg-red-100 rounded-md theme-text">
                                     <ul>
                                         @foreach($errors->all() as $error)
                                             <li>{{ $error }}</li>
@@ -26,24 +26,24 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('setting.update') }}" method="POST" enctype="multipart/form-data" id="settings-form">
+                            <form action="{{ route('setting.update') }}" method="POST" enctype="multipart/form-data" id="settings-form" class="theme-text">
                                 @csrf
                                 <div class="space-y-4">
                                     <!-- Change Email -->
                                     <div>
-                                        <label class="block text-gray-700">Change Email:</label>
-                                        <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 border rounded-md" value="{{ $settings->change_email ?? '' }}">
+                                        <label class="block theme-text">Change Email:</label>
+                                        <input type="email" name="change_email" placeholder="Enter new email" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text" value="{{ $settings->change_email ?? '' }}">
                                     </div>
 
                                     <!-- Update Age and Gender -->
                                     <div class="flex gap-4">
                                         <div class="w-1/2">
-                                            <label class="block text-gray-700">Update Age:</label>
-                                            <input type="number" name="age" min="13" class="w-full p-2 mt-1 border rounded-md" value="{{ Auth::user()->age ?? '' }}">
+                                            <label class="block theme-text">Update Age:</label>
+                                            <input type="number" name="age" min="13" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text" value="{{ Auth::user()->age ?? '' }}">
                                         </div>
                                         <div class="w-1/2">
-                                            <label class="block text-gray-700">Change Gender:</label>
-                                            <select name="gender" class="w-full p-2 mt-1 border rounded-md">
+                                            <label class="block theme-text">Change Gender:</label>
+                                            <select name="gender" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                                 <option value="" disabled {{ !Auth::user()->gender ? 'selected' : '' }}>Select Gender</option>
                                                 <option value="male" {{ (Auth::user()->gender ?? '') == 'male' ? 'selected' : '' }}>Male</option>
                                                 <option value="female" {{ (Auth::user()->gender ?? '') == 'female' ? 'selected' : '' }}>Female</option>
@@ -52,8 +52,8 @@
                                     </div>
                                     <!-- Update Educational Level -->
                                     <div class="mt-4">
-                                        <label class="block text-gray-700">Update Educational Level:</label>
-                                        <select name="educational_level" class="w-full p-2 mt-1 border rounded-md">
+                                        <label class="block theme-text">Update Educational Level:</label>
+                                        <select name="educational_level" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                             <option value="" disabled {{ !Auth::user()->educational_level ? 'selected' : '' }}>Select Educational Level</option>
                                             <option value="elementary" {{ (Auth::user()->educational_level ?? '') == 'elementary' ? 'selected' : '' }}>Elementary</option>
                                             <option value="high school" {{ (Auth::user()->educational_level ?? '') == 'high school' ? 'selected' : '' }}>High School</option>
@@ -64,39 +64,39 @@
 
                                     <!-- Current Password -->
                                     <div>
-                                        <label class="block text-gray-700">Enter Current Password:</label>
-                                        <input type="password" name="current_password" placeholder="Enter your current password" class="w-full p-2 mt-1 border rounded-md">
+                                        <label class="block theme-text">Enter Current Password:</label>
+                                        <input type="password" name="current_password" placeholder="Enter your current password" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                     </div>
 
                                     <!-- Change Password -->
                                     <div>
-                                        <label class="block text-gray-700">Change Password:</label>
-                                        <input type="password" name="change_password" placeholder="Enter new password" class="w-full p-2 mt-1 border rounded-md">
+                                        <label class="block theme-text">Change Password:</label>
+                                        <input type="password" name="change_password" placeholder="Enter new password" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                     </div>
 
                                     <!-- Change Profile Picture -->
                                     <div>
-                                        <label class="block text-gray-700">Change Profile Picture:</label>
-                                        <input type="file" name="profile_picture" class="w-full p-2 mt-1 border rounded-md">
+                                        <label class="block theme-text">Change Profile Picture:</label>
+                                        <input type="file" name="profile_picture" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                     </div>
 
                                     <!-- Dark / Light Mode -->
                                     <div>
-                                        <label class="block text-gray-700">Theme:</label>
-                                        <select name="theme" class="w-full p-2 mt-1 border rounded-md">
+                                        <label class="block theme-text">Theme:</label>
+                                        <select name="theme" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                             <option value="light" {{ ($settings->theme ?? '') == 'light' ? 'selected' : '' }}>Light Mode</option>
                                             <option value="dark" {{ ($settings->theme ?? '') == 'dark' ? 'selected' : '' }}>Dark Mode</option>
                                         </select>
                                     </div>
 
-                                    <!-- Notifications -->
+                                    <!-- Notifications --....
                                     <div>
-                                        <label class="block text-gray-700">Notifications:</label>
-                                        <select name="notification" class="w-full p-2 mt-1 border rounded-md">
-                                            <option value="1" {{ ($settings->notification ?? false) ? 'selected' : '' }}>Turn On</option>
-                                            <option value="0" {{ ($settings->notification ?? false) ? '' : 'selected' }}>Turn Off</option>
+                                        <label class="block theme-text">Notifications:</label>
+                                        <select name="notification" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
+                                            <option value="1" {{ ($settings->notification === true) ? 'selected' : '' }}>Turn On</option>
+                                            <option value="0" {{ ($settings->notification === false) ? 'selected' : '' }}>Turn Off</option>
                                         </select>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Buttons -->
                                     <div class="flex space-x-4">
@@ -123,12 +123,47 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 
+    <style>
+        /* Theme-specific styles */
+        [data-theme="light"] .theme-text {
+            color: #1a1a1a; /* Dark text for light mode */
+        }
+
+        [data-theme="dark"] .theme-text {
+            color: #e5e5e5; /* Light text for dark mode */
+        }
+
+        /* Input and select specific styles */
+        [data-theme="light"] input::placeholder,
+        [data-theme="light"] select::placeholder {
+            color: #666666;
+        }
+
+        [data-theme="dark"] input::placeholder,
+        [data-theme="dark"] select::placeholder {
+            color: #a0a0a0;
+        }
+
+        /* Ensure inputs and selects maintain their text color */
+        [data-theme="light"] input,
+        [data-theme="light"] select {
+            color: #1a1a1a;
+        }
+
+        [data-theme="dark"] input,
+        [data-theme="dark"] select {
+            color: #e5e5e5;
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('settings-form');
             const currentPasswordInput = document.querySelector('input[name="current_password"]');
             const changePasswordInput = document.querySelector('input[name="change_password"]');
             const themeSelect = document.querySelector('select[name="theme"]');
+            const userId = {{ Auth::id() }}; // Get current user's ID
+            const userThemeKey = `userTheme_${userId}`; // Create user-specific key
 
             // Initially disable the change password field
             if (changePasswordInput) {
@@ -153,17 +188,26 @@
                     const selectedTheme = this.value;
                     document.documentElement.setAttribute('data-theme', selectedTheme);
 
+                    // Update all theme-text elements
+                    document.querySelectorAll('.theme-text').forEach(element => {
+                        element.style.color = selectedTheme === 'light' ? '#1a1a1a' : '#e5e5e5';
+                    });
+
                     // Save theme preference to localStorage for immediate effect
-                    localStorage.setItem('theme', selectedTheme);
+                    localStorage.setItem(userThemeKey, selectedTheme);
                 });
             }
 
             // Check for theme in localStorage on page load
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem(userThemeKey);
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
                 if (themeSelect) {
                     themeSelect.value = savedTheme;
+                    // Update text colors based on saved theme
+                    document.querySelectorAll('.theme-text').forEach(element => {
+                        element.style.color = savedTheme === 'light' ? '#1a1a1a' : '#e5e5e5';
+                    });
                 }
             }
 
@@ -197,7 +241,7 @@
                 });
             }
 
-            // Add click event to the restore button
+            // Update restore button handler
             const restoreButton = document.querySelector('button[type="reset"]');
             if (restoreButton) {
                 restoreButton.addEventListener('click', function(e) {
@@ -207,7 +251,7 @@
                     const serverTheme = document.documentElement.getAttribute('data-theme');
                     if (serverTheme) {
                         document.documentElement.setAttribute('data-theme', serverTheme);
-                        localStorage.setItem('theme', serverTheme);
+                        localStorage.setItem(userThemeKey, serverTheme);
                         if (themeSelect) {
                             themeSelect.value = serverTheme;
                         }

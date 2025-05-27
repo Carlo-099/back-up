@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Theme Variables */
         :root[data-theme="light"] {
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -20,36 +21,129 @@
             --notification-border: #e9ecef;
             --notification-unread: #e3f2fd;
             --notification-badge: #dc3545;
+            --text-color: #212529;
+            --feedback-bg: #e6faf0;
+            --feedback-border: #b6e7d8;
+            --feedback-heading: #14532d;
+            --feedback-title: #166534;
+            --feedback-text: #14532d;
+            --feedback-label: #166534;
+            --feedback-accent: #16a34a;
+            --feedback-success-bg: #d1fae5;
+            --feedback-success-text: #166534;
+            --feedback-error-bg: #fee2e2;
+            --feedback-error-text: #b91c1c;
+            --feedback-input-bg: #fff;
+            --feedback-input-border: #b6e7d8;
+            --feedback-input-text: #14532d;
+            --feedback-btn-bg: #16a34a;
+            --feedback-btn-text: #fff;
+            --feedback-btn-border: #16a34a;
+            --feedback-btn-alt-bg: #d1fae5;
+            --feedback-btn-alt-text: #166534;
+            --feedback-btn-alt-border: #b6e7d8;
+            --feedback-admin-bg: #d1fae5;
+            --feedback-admin-label: #166534;
+            --feedback-admin-text: #14532d;
         }
 
         :root[data-theme="dark"] {
-            --bg-primary: #212529;
-            --bg-secondary: #343a40;
-            --text-primary: #f8f9fa;
+            --bg-primary: #1a1f2e;
+            --bg-secondary: #2a2f3e;
+            --text-primary: #e9ecef;
             --text-secondary: #adb5bd;
             --border-color: #495057;
-            --accent-color: #0d6efd;
-            --hover-color: #495057;
-            --notification-bg: #2c3034;
+            --accent-color: #4dabf7;
+            --hover-color: #343a40;
+            --notification-bg: #2a2f3e;
             --notification-hover: #343a40;
             --notification-border: #495057;
             --notification-unread: #1a237e;
             --notification-badge: #dc3545;
+            --text-color: #e9ecef;
+            --feedback-bg: #23293a;
+            --feedback-border: #38405a;
+            --feedback-heading: #a5b4fc;
+            --feedback-title: #c7d2fe;
+            --feedback-text: #e0e7ef;
+            --feedback-label: #a5b4fc;
+            --feedback-accent: #60a5fa;
+            --feedback-success-bg: #23293a;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #3b2231;
+            --feedback-error-text: #fca5a5;
+            --feedback-input-bg: #1e2533;
+            --feedback-input-border: #38405a;
+            --feedback-input-text: #e0e7ef;
+            --feedback-btn-bg: #6366f1;
+            --feedback-btn-text: #fff;
+            --feedback-btn-border: #6366f1;
+            --feedback-btn-alt-bg: #23293a;
+            --feedback-btn-alt-text: #a5b4fc;
+            --feedback-btn-alt-border: #38405a;
+            --feedback-admin-bg: #23293a;
+            --feedback-admin-label: #a5b4fc;
+            --feedback-admin-text: #e0e7ef;
+        }
+
+        /* Theme Transition */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Original Navbar Styles */
+        .navbar {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #1a2b36 !important;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: #3a4a56 !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #2ecc71 !important;
+        }
+
+        .nav-link.active {
+            color: #2ecc71 !important;
+            font-weight: 600;
+        }
+
+        .navbar-toggler {
+            border-color: #e5e7eb;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: #2ecc71;
+        }
+
+        /* Dark Mode Toggle Button */
+        #theme-toggle {
+            padding: 0.5rem;
+            cursor: pointer;
+            color: #3a4a56;
+        }
+
+        #theme-toggle:hover {
+            color: #2ecc71;
+        }
+
+        #theme-toggle i {
+            font-size: 1.1rem;
         }
 
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .navbar {
-            background-color: var(--bg-secondary) !important;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .navbar-brand, .nav-link {
-            color: var(--text-primary) !important;
         }
 
         .card {
@@ -354,8 +448,15 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item">
+                        <button id="theme-toggle" class="bg-transparent border-0 nav-link" aria-label="Toggle dark mode">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="hidden fas fa-sun dark:block"></i>
+                        </button>
+                    </li>
                     <!-- Notification Dropdown -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" id="notificationContainer" style="display: none;">
                         <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell"></i>
                             <span class="notification-badge">3</span>
@@ -422,6 +523,15 @@
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                             <li><a class="dropdown-item" href="#">Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <span>Notifications</span>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="notificationToggle" checked>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Logout</a></li>
                         </ul>
                     </li>
@@ -435,7 +545,44 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Theme Toggle Functionality
         document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            const notificationToggle = document.getElementById('notificationToggle');
+            const notificationContainer = document.getElementById('notificationContainer');
+
+            // Check for saved notification preference
+            const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+            notificationToggle.checked = notificationsEnabled;
+            notificationContainer.style.display = notificationsEnabled ? 'block' : 'none';
+
+            // Handle notification toggle
+            notificationToggle.addEventListener('change', function() {
+                const enabled = this.checked;
+                localStorage.setItem('notificationsEnabled', enabled);
+                notificationContainer.style.display = enabled ? 'block' : 'none';
+            });
+
+            // Check for saved theme preference or use system preference
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                html.setAttribute('data-theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+            }
+
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
             // Example: Mark notification as read when clicked
             document.querySelectorAll('.notification-item').forEach(item => {
                 item.addEventListener('click', function() {
