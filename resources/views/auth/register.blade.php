@@ -104,16 +104,17 @@
         .register-card {
             width: 100%;
             max-width: 430px;
-            padding: 2.5rem 2rem 2rem 2rem;
+            padding: 2rem;
             background: rgba(30, 41, 59, 0.85);
             border-radius: 1.5rem;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(8px);
             z-index: 1;
-            margin: 2rem 0;
+            margin: 1rem;
+            transition: all 0.3s ease;
         }
         .register-title {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             font-weight: bold;
             color: #00eaff;
             text-align: center;
@@ -121,22 +122,20 @@
             text-shadow: 0 0 8px #00eaff, 0 0 16px #1a6cff;
         }
         .register-subtitle {
+            font-size: clamp(0.875rem, 3vw, 1rem);
             color: #cbefff;
             text-align: center;
             margin-bottom: 1.5rem;
         }
         .register-btn, .edu-btn {
-            background: linear-gradient(90deg, #00eaff 0%, #1a6cff 100%);
-            color: #fff;
-            border: none;
-            border-radius: 9999px;
-            padding: 0.75rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            box-shadow: 0 0 16px #00eaff99;
-            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
             width: 100%;
+            padding: clamp(0.75rem, 2vw, 1rem) 1.5rem;
+            font-size: clamp(0.875rem, 3vw, 1.1rem);
+            border-radius: 9999px;
             margin-top: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .register-btn:hover, .edu-btn:hover {
             transform: translateY(-3px) scale(1.05);
@@ -148,25 +147,25 @@
         .register-card input[type="text"],
         .register-card input[type="number"],
         .register-card select {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-            border: 1.5px solid #00eaff44;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 1rem;
             width: 100%;
-            font-size: 1rem;
-            outline: none;
-            transition: border 0.2s;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            font-size: 16px; /* Prevents zoom on iOS */
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(0, 234, 255, 0.2);
+            color: #fff;
+            transition: all 0.3s ease;
         }
         .register-card input:focus,
         .register-card select:focus {
             border: 1.5px solid #00eaff;
         }
         .register-card label {
+            display: block;
+            margin-bottom: 0.5rem;
             color: #cbefff;
-            font-size: 0.95rem;
-            margin-bottom: 0.2rem;
+            font-size: clamp(0.875rem, 2.5vw, 0.95rem);
         }
         .register-card .text-red-500 {
             color: #ff6b6b;
@@ -180,319 +179,157 @@
         .register-card .text-indigo-600:hover {
             color: #1a6cff;
         }
-        @media (max-width: 600px) {
-            .navbar-content {
+        .flex.gap-2 {
+            gap: clamp(0.5rem, 2vw, 1rem);
+        }
+        .w-1/2 {
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .w-1/2 {
+                width: 48%;
+            }
+        }
+        @media (max-width: 640px) {
+            .register-card {
+                margin: 0.5rem;
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+            .main-content {
+                padding: 1rem;
+                padding-top: 80px;
+            }
+            .flex.gap-2 {
                 flex-direction: column;
-                gap: 0.5rem;
-                padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-                align-items: center;
+            }
+            .grid {
+                gap: 0.75rem;
+            }
+            .edu-btn {
+                padding: 0.875rem 1rem;
+            }
+            .navbar-content {
+                padding: 0.5rem 1rem;
             }
             .navbar-logo {
-                margin-bottom: 0.5rem;
-                width: 100%;
-                text-align: center;
+                font-size: clamp(1.25rem, 4vw, 1.5rem);
             }
+            .navbar-link {
+                padding: 0.75rem 1rem;
+            }
+        }
+        @media (max-width: 768px) {
             .navbar-hamburger {
                 display: flex;
-                position: absolute;
-                top: 10px;
-                right: 10px;
             }
             .navbar-links {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
-                width: 100%;
-                background: #23272f;
                 position: absolute;
-                top: 50px;
+                top: 64px;
                 left: 0;
                 right: 0;
+                background: #23272f;
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
                 max-height: 0;
                 overflow: hidden;
                 opacity: 0;
-                pointer-events: none;
-                box-shadow: 0 8px 32px 0 #0006;
-                border-radius: 0 0 1rem 1rem;
+                transition: all 0.3s ease;
             }
             .navbar-links.open {
-                max-height: 400px;
+                max-height: 300px;
                 opacity: 1;
-                pointer-events: auto;
-                padding-bottom: 1rem;
+                padding: 1rem 0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
             .navbar-link {
-                font-size: 1rem;
-                padding: 0.5rem 1.2rem;
                 width: 100%;
                 text-align: center;
+                padding: 0.75rem 1rem;
             }
-            .main-content {
-                padding-top: 90px;
-            }
-            .register-card {
-                padding: 1.5rem 0.5rem 1.5rem 0.5rem;
-                max-width: 98vw;
-            }
-        }
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            background: var(--bg-color);
-        }
-        .auth-card {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            box-shadow: 0 8px 32px rgba(0, 234, 255, 0.1);
-            border: 1px solid rgba(0, 234, 255, 0.1);
-            backdrop-filter: blur(12px);
-            position: relative;
-            overflow: hidden;
-        }
-        .auth-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 234, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .auth-logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1rem;
-        }
-        .auth-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #00eaff;
-            text-align: center;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
-            letter-spacing: 2px;
-            position: relative;
-        }
-        .auth-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                #00eaff 50%,
-                transparent 100%);
-            border-radius: 3px;
-        }
-        .auth-subtitle {
-            color: rgba(203, 239, 255, 0.8);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-        }
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        .form-group::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(0, 234, 255, 0.2) 50%,
-                transparent 100%);
-        }
-        .form-label {
-            color: #cbefff;
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
-        }
-        .form-input {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 234, 255, 0.2);
-            border-radius: 1rem;
-            padding: 1rem 1.25rem;
-            color: #f3f4f6;
-            font-size: 1rem;
-            width: 100%;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.5px;
-        }
-        .form-input:hover {
-            border-color: rgba(0, 234, 255, 0.4);
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 234, 255, 0.1);
-        }
-        .form-input:focus {
-            border-color: #00eaff;
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(0, 234, 255, 0.15),
-                       0 0 20px rgba(0, 234, 255, 0.1);
-            outline: none;
-            transform: translateY(-2px);
-        }
-        .form-input::placeholder {
-            color: rgba(203, 239, 255, 0.4);
-            font-style: italic;
-        }
-        .form-input.input-error {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.05);
-            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-        }
-        @keyframes shake {
-            10%, 90% { transform: translateX(-1px); }
-            20%, 80% { transform: translateX(2px); }
-            30%, 50%, 70% { transform: translateX(-4px); }
-            40%, 60% { transform: translateX(4px); }
-        }
-        .form-input.input-error:focus {
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15),
-                       0 0 20px rgba(239, 68, 68, 0.1);
-        }
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.75rem;
-            display: block;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .auth-button {
-            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 1rem;
-        }
-        .auth-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-        .auth-links {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        .auth-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .auth-link:hover {
-            color: var(--secondary-color);
-        }
-        .password-requirements {
-            margin-top: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        .password-requirements ul {
-            list-style: none;
-            padding-left: 0;
-            margin-top: 0.25rem;
-        }
-        .password-requirements li {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            margin-bottom: 0.25rem;
-        }
-        .password-requirements li i {
-            font-size: 0.625rem;
-        }
-        .requirement-met {
-            color: var(--primary-color);
-        }
-        .requirement-unmet {
-            color: var(--text-secondary);
         }
         @media (max-width: 480px) {
-            .auth-container {
-                padding: 1rem;
+            body {
+                font-size: 14px;
             }
-            .auth-card {
-                padding: 1.5rem;
+            .register-card {
+                margin: 0.25rem;
+                padding: 1.25rem;
             }
-            .auth-logo {
-                width: 60px;
-                height: 60px;
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            select {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
             }
-            .auth-title {
-                font-size: 1.25rem;
-            }
-            .auth-subtitle {
-                font-size: 0.75rem;
-            }
-            .form-input {
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
-            .auth-button {
-                padding: 0.625rem;
+            .register-btn, .edu-btn {
+                padding: 0.75rem 1rem;
                 font-size: 0.875rem;
             }
+            .navbar {
+                height: 56px;
+            }
+            .navbar-hamburger {
+                width: 32px;
+                height: 32px;
+            }
+            .navbar-hamburger span {
+                width: 24px;
+                height: 3px;
+            }
+            .navbar-links {
+                top: 56px;
+            }
         }
-        /* Error Messages */
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: block;
+        /* Fix for iOS input zoom */
+        @supports (-webkit-touch-callout: none) {
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            select {
+                font-size: 16px !important;
+            }
         }
-        .input-error {
-            border-color: #ef4444 !important;
+        /* Improve touch targets on mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .register-btn, .edu-btn {
+                min-height: 44px;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            select {
+                min-height: 44px;
+            }
+            .navbar-link {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
-        .input-error:focus {
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+        /* Improve form layout on very small screens */
+        @media (max-width: 360px) {
+            .register-card {
+                padding: 1rem;
+            }
+            .register-title {
+                font-size: 1.25rem;
+            }
+            .register-subtitle {
+                font-size: 0.875rem;
+            }
+            .mb-4 {
+                margin-bottom: 0.75rem;
+            }
+            .grid {
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -518,139 +355,81 @@
         </div>
     </nav>
     <div class="main-content">
-        <div class="auth-container">
-            <div class="auth-card" data-aos="fade-up" data-aos-duration="1000">
-                <div class="auth-header">
-                    <h1 class="auth-title">Create Account</h1>
-                    <p class="auth-subtitle">Join us to start managing your tasks</p>
-                </div>
-                <form method="POST" action="{{ route('register') }}" class="auth-form">
-                    @csrf
-                    <div class="form-group">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" id="name" name="name" class="form-input @error('name') input-error @enderror"
-                            value="{{ old('name') }}" required autocomplete="name" autofocus>
-                        @error('name')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
+        <div class="register-card tilt-card" data-aos="zoom-in" data-aos-duration="1000">
+            <div>
+                <h2 class="register-title">Join the Ninja Clan!</h2>
+                <p class="register-subtitle">Start your journey to task mastery</p>
+            </div>
+            <form id="registerForm" class="mt-8 space-y-6" action="{{ route('register') }}" method="POST">
+                @csrf
+                <div id="step1">
+                    <div class="mb-4">
+                        <label for="name">Full Name</label>
+                        <input id="name" name="name" type="text" required placeholder="Full Name">
                     </div>
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-input @error('email') input-error @enderror"
-                            value="{{ old('email') }}" required autocomplete="email">
-                        @error('email')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password"
-                            class="form-input @error('password') input-error @enderror"
-                            required autocomplete="new-password">
-                        @error('password')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                        <div class="password-requirements">
-                            <p>Password must contain:</p>
-                            <ul>
-                                <li class="requirement-unmet" id="length">
-                                    <i class="fas fa-circle"></i> At least 8 characters
-                                </li>
-                                <li class="requirement-unmet" id="uppercase">
-                                    <i class="fas fa-circle"></i> One uppercase letter
-                                </li>
-                                <li class="requirement-unmet" id="lowercase">
-                                    <i class="fas fa-circle"></i> One lowercase letter
-                                </li>
-                                <li class="requirement-unmet" id="number">
-                                    <i class="fas fa-circle"></i> One number
-                                </li>
-                                <li class="requirement-unmet" id="special">
-                                    <i class="fas fa-circle"></i> One special character
-                                </li>
-                            </ul>
+                    <div class="flex gap-2 mb-4">
+                        <div class="w-1/2">
+                            <label for="age">Age</label>
+                            <input id="age" name="age" type="number" min="13" required placeholder="Age">
+                        </div>
+                        <div class="w-1/2">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password_confirmation" class="form-label">Confirm Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation"
-                            class="form-input" required autocomplete="new-password">
+                    <div class="mb-4">
+                        <label for="email">Email address</label>
+                        <input id="email" name="email" type="email" required placeholder="Email address" value="{{ old('email') }}">
                     </div>
-                    <button type="submit" class="auth-button">
-                        Create Account
-                    </button>
-                    <div class="auth-links">
-                        <p>
-                            Already have an account?
-                            <a href="{{ route('show.login') }}" class="auth-link">Sign in</a>
-                        </p>
+                    <div class="mb-4">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" required placeholder="Password">
                     </div>
-                </form>
+                    <div class="mb-4">
+                        <label for="password_confirmation">Confirm Password</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" required placeholder="Confirm Password">
+                    </div>
+                    @if ($errors->any())
+                        <div class="mb-2 text-sm text-red-500">
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+                    <button type="button" id="nextStepBtn" class="register-btn">Next</button>
+                </div>
+                <div id="step2" style="display:none;">
+                    <h2 class="mb-4 text-lg font-bold text-center">Educational Level</h2>
+                    <div class="grid grid-cols-1 gap-4 mb-6">
+                        <button type="button" class="edu-btn" data-value="elementary">Elementary</button>
+                        <button type="button" class="edu-btn" data-value="high school">High School</button>
+                        <button type="button" class="edu-btn" data-value="senior high">Senior High</button>
+                        <button type="button" class="edu-btn" data-value="college">College</button>
+                    </div>
+                    <input type="hidden" name="educational_level" id="educational_level" required>
+                    <div>
+                        <button type="submit" class="register-btn">Create Account</button>
+                    </div>
+                </div>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">
+                    Already a ninja?
+                    <a href="{{ route('show.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Sign in here
+                    </a>
+                </p>
             </div>
         </div>
     </div>
     <!-- AOS Animate On Scroll JS -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        AOS.init({
-            once: true,
-            disable: 'mobile'
-        });
-        // Password validation
-        const password = document.getElementById('password');
-        const requirements = {
-            length: document.getElementById('length'),
-            uppercase: document.getElementById('uppercase'),
-            lowercase: document.getElementById('lowercase'),
-            number: document.getElementById('number'),
-            special: document.getElementById('special')
-        };
-        password.addEventListener('input', function() {
-            const value = this.value;
-
-            // Check length
-            if (value.length >= 8) {
-                requirements.length.classList.remove('requirement-unmet');
-                requirements.length.classList.add('requirement-met');
-            } else {
-                requirements.length.classList.remove('requirement-met');
-                requirements.length.classList.add('requirement-unmet');
-            }
-            // Check uppercase
-            if (/[A-Z]/.test(value)) {
-                requirements.uppercase.classList.remove('requirement-unmet');
-                requirements.uppercase.classList.add('requirement-met');
-            } else {
-                requirements.uppercase.classList.remove('requirement-met');
-                requirements.uppercase.classList.add('requirement-unmet');
-            }
-            // Check lowercase
-            if (/[a-z]/.test(value)) {
-                requirements.lowercase.classList.remove('requirement-unmet');
-                requirements.lowercase.classList.add('requirement-met');
-            } else {
-                requirements.lowercase.classList.remove('requirement-met');
-                requirements.lowercase.classList.add('requirement-unmet');
-            }
-            // Check number
-            if (/[0-9]/.test(value)) {
-                requirements.number.classList.remove('requirement-unmet');
-                requirements.number.classList.add('requirement-met');
-            } else {
-                requirements.number.classList.remove('requirement-met');
-                requirements.number.classList.add('requirement-unmet');
-            }
-            // Check special character
-            if (/[!@#$%^&*]/.test(value)) {
-                requirements.special.classList.remove('requirement-unmet');
-                requirements.special.classList.add('requirement-met');
-            } else {
-                requirements.special.classList.remove('requirement-met');
-                requirements.special.classList.add('requirement-unmet');
-            }
-        });
-    </script>
-    <script>
+        AOS.init({ once: true });
         // VanillaTilt 3D effect for card
         VanillaTilt.init(document.querySelectorAll('.tilt-card'), {
             max: 15,
@@ -674,6 +453,39 @@
                 });
             }
         });
+    </script>
+    <script>
+        document.getElementById('nextStepBtn').onclick = function() {
+            // Validate age
+            var age = document.getElementById('age').value;
+            if (parseInt(age) < 13) {
+                alert('You must be at least 13 years old to register.');
+                return;
+            }
+            // Validate gender
+            var gender = document.getElementById('gender').value;
+            if (!gender) {
+                alert('Please select your gender.');
+                return;
+            }
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        };
+        document.querySelectorAll('.edu-btn').forEach(function(btn) {
+            btn.onclick = function() {
+                document.getElementById('educational_level').value = this.getAttribute('data-value');
+                // Highlight selected
+                document.querySelectorAll('.edu-btn').forEach(b => b.classList.remove('bg-blue-300'));
+                this.classList.add('bg-blue-300');
+            };
+        });
+        // Prevent submit if no educational level selected
+        document.getElementById('registerForm').onsubmit = function() {
+            if (!document.getElementById('educational_level').value) {
+                alert('Please select your educational level.');
+                return false;
+            }
+        };
     </script>
 </body>
 </html>
