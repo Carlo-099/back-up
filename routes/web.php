@@ -88,11 +88,13 @@ Route::middleware('auth')->controller(NinjaController::class)->group(function ()
     Route::delete('/ninjas/{ninja}',  'destroy')->name('ninjas.destroy');
 });
 
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
-Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks/{id}/complete', [TaskController::class, 'complete'])->name('tasks.complete')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('/tasks/{id}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
+});
 
 // Notification-related route
 Route::post('/notifications/mark-as-read/{task}', [TaskController::class, 'markAsRead'])->name('notifications.markAsRead');

@@ -73,9 +73,30 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Clear all session data
+        $request->session()->flush();
+
+        // Invalidate the session
         $request->session()->invalidate();
+
+        // Regenerate CSRF token
         $request->session()->regenerateToken();
-        return redirect()->route('show.login');
+
+        // Logout the user
+        Auth::logout();
+
+        // Clear any cached data
+        $request->session()->forget(['user', 'settings', 'notifications']);
+
+        // Set cache control headers for all authenticated routes
+        $response = redirect()->route('show.login');
+
+        // Add headers to prevent caching and back button access
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+        $response->headers->set('Clear-Site-Data', '"cache", "cookies", "storage"');
+
+        return $response;
     }
 }

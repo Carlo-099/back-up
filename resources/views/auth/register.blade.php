@@ -47,7 +47,7 @@
         }
         .navbar-content {
             width: 100%;
-            max-width: 1200px;
+            max-width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -59,11 +59,13 @@
             font-weight: bold;
             color: #fff;
             letter-spacing: 2px;
+            margin-right: auto;
         }
         .navbar-links {
             display: flex;
             gap: 2rem;
             transition: max-height 0.3s, opacity 0.3s;
+            margin-left: auto;
         }
         .navbar-hamburger {
             display: none;
@@ -285,7 +287,7 @@
             }
         }
         /* Fix for iOS input zoom */
-        @supports (-webkit-touch-callout: none) {
+        @@supports (-webkit-touch-callout: none) {
             input[type="text"],
             input[type="email"],
             input[type="password"],
