@@ -55,8 +55,21 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Add logging for last login update
+            \Illuminate\Support\Facades\Log::info('User login successful', [
+                'user_id' => Auth::id(),
+                'email' => Auth::user()->email,
+                'current_last_login' => Auth::user()->last_login_at
+            ]);
+
             // Update last login time
             Auth::user()->updateLastLogin();
+
+            // Log after update
+            \Illuminate\Support\Facades\Log::info('Last login updated', [
+                'user_id' => Auth::id(),
+                'new_last_login' => Auth::user()->fresh()->last_login_at
+            ]);
 
             // Check if user is admin
             if (Auth::user()->is_admin) {

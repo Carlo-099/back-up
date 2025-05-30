@@ -140,3 +140,12 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+// Add this route to serve the video file
+Route::get('/video/laptop', function () {
+    $path = public_path('3d-assets/laptop.mkv');
+    return response()->file($path, [
+        'Content-Type' => 'video/x-matroska',
+        'Content-Disposition' => 'inline',
+    ]);
+})->name('video.laptop');
+

@@ -99,7 +99,7 @@
             position: relative;
             width: 100%;
             min-height: 420px;
-            background: url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            background: url('/images/hero.jpg') center/cover no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -473,7 +473,7 @@
 
         <!-- About Section -->
         <section class="section about-section" id="about" data-aos="fade-left" data-aos-duration="1000">
-            <img src="\images\logo.png" class="about-img" alt="About Us" data-aos="flip-left" data-aos-delay="200">
+            <img src="\images\about.jpg" class="about-img" alt="About Us" data-aos="flip-left" data-aos-delay="200">
             <div class="about-content">
                 <div class="about-title" data-aos="fade-right" data-aos-delay="300">About Us</div>
                 <div class="about-desc" data-aos="fade-up" data-aos-delay="400">Smart To Do List is a productivity platform built to help individuals and teams stay focused, organized, and in control of their daily tasks. We believe that managing your time and goals shouldn't feel overwhelming — that's why we created a smart, easy-to-use tool that adapts to your workflow. Whether you're planning your day, tracking progress, or setting long-term goals, our system keeps you one step ahead.</div>
@@ -491,19 +491,19 @@
             <div class="services-title" data-aos="zoom-in" data-aos-delay="100">What You Can Organize</div>
             <div class="services-grid">
                 <div class="service-card tilt-card" data-aos="flip-left" data-aos-delay="100">
-                    <img src="\images\logo.png" class="service-bg" alt="Listing Activities">
+                    <img src="\images\list.jpg" class="service-bg" alt="Listing Activities">
                     <div class="service-title">Listing Activities</div>
                 </div>
                 <div class="service-card tilt-card" data-aos="flip-right" data-aos-delay="200">
-                    <img src="\images\logo.png"" class="service-bg" alt="Home Tasks">
+                    <img src="\images\home.jpg"" class="service-bg" alt="Home Tasks">
                     <div class="service-title">Home Tasks</div>
                 </div>
                 <div class="service-card tilt-card" data-aos="flip-up" data-aos-delay="300">
-                    <img src="\images\logo.png" class="service-bg" alt="School & Study">
+                    <img src="\images\school.jpg" class="service-bg" alt="School & Study">
                     <div class="service-title">School & Study</div>
                 </div>
                 <div class="service-card tilt-card" data-aos="flip-down" data-aos-delay="400">
-                    <img src="\images\logo.png"class="service-bg" alt="Outdoor & Errands">
+                    <img src="\images\outdoors.jpg"class="service-bg" alt="Outdoor & Errands">
                     <div class="service-title">Outdoor & Errands</div>
                 </div>
             </div>
@@ -511,31 +511,31 @@
         <!-- Projects Section -->
         <section class="section projects-section" id="projects" style="padding-bottom: 4rem;" data-aos="fade-up" data-aos-duration="1000">
             <div class="projects-title" data-aos="fade-up" data-aos-delay="100">Your Productivity Projects</div>
-            <img src="\images\logo.png" class="projects-img tilt-card" alt="Productivity Overview" data-aos="zoom-in" data-aos-delay="200">
+            <img src="\images\project.jpg" class="projects-img tilt-card" alt="Productivity Overview" data-aos="zoom-in" data-aos-delay="200">
             <div class="projects-cards-row">
                 <div class="project-card tilt-card" data-aos="fade-up" data-aos-delay="100">
-                    <img src="\images\logo.png">
+                    <img src="\images\list.jpg">
                     <div class="project-card-content">
                         <div class="project-card-title">Daily Task List</div>
                         <div class="project-card-desc">Organize your daily activities and never miss a task again.</div>
                     </div>
                 </div>
                 <div class="project-card tilt-card" data-aos="fade-up" data-aos-delay="200">
-                    <img src="\images\logo.png">
+                    <img src="\images\home.jpg">
                     <div class="project-card-content">
                         <div class="project-card-title">Home Chores</div>
                         <div class="project-card-desc">Keep track of your home cleaning, cooking, and maintenance tasks.</div>
                     </div>
                 </div>
                 <div class="project-card tilt-card" data-aos="fade-up" data-aos-delay="300">
-                    <img src="\images\logo.png">
+                    <img src="\images\school.jpg">
                     <div class="project-card-content">
                         <div class="project-card-title">Study Planner</div>
                         <div class="project-card-desc">Manage your school assignments, exams, and study sessions.</div>
                     </div>
                 </div>
                 <div class="project-card tilt-card" data-aos="fade-up" data-aos-delay="400">
-                    <img src="\images\logo.png">
+                    <img src="\images\outdoors.jpg">
                     <div class="project-card-content">
                         <div class="project-card-title">Errands & Outdoors</div>
                         <div class="project-card-desc">Plan your shopping, appointments, and outdoor activities.</div>

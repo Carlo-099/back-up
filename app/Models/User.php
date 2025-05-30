@@ -60,7 +60,18 @@ class User extends Authenticatable
 
     public function updateLastLogin()
     {
-        $this->update(['last_login_at' => now()]);
+        \Illuminate\Support\Facades\Log::info('Updating last login', [
+            'user_id' => $this->id,
+            'old_last_login' => $this->last_login_at
+        ]);
+
+        $this->last_login_at = now();
+        $this->save();
+
+        \Illuminate\Support\Facades\Log::info('Last login updated in model', [
+            'user_id' => $this->id,
+            'new_last_login' => $this->last_login_at
+        ]);
     }
 
     public function notifications()

@@ -89,14 +89,14 @@
                                         </select>
                                     </div>
 
-                                    <!-- Notifications --....
+                                    <!-- Notifications -->
                                     <div>
                                         <label class="block theme-text">Notifications:</label>
                                         <select name="notification" class="w-full p-2 mt-1 bg-transparent border rounded-md theme-text">
                                             <option value="1" {{ ($settings->notification === true) ? 'selected' : '' }}>Turn On</option>
                                             <option value="0" {{ ($settings->notification === false) ? 'selected' : '' }}>Turn Off</option>
                                         </select>
-                                    </div> -->
+                                    </div>
 
                                     <!-- Buttons -->
                                     <div class="flex space-x-4">

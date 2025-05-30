@@ -347,12 +347,15 @@
         }
         .model-container {
             width: 100%;
-            height: clamp(300px, 50vw, 400px);
-            margin: 2rem 0;
+            aspect-ratio: 16/9;
+            margin: 1.5rem 0 0 0;
             border-radius: 1rem;
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
             background: rgba(30, 41, 59, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #model-viewer {
             width: 100%;
@@ -389,7 +392,10 @@
             <h1 class="left-title">Smart To Do List</h1>
 
             <div class="model-container" data-aos="fade-up" data-aos-duration="1000">
-                <div id="model-viewer"></div>
+                <video id="video-player" autoplay loop muted playsinline>
+                    <source src="{{ asset('videos/laptop.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
 
             <p style="font-size: 13px; color: #cbefff; margin-top: 0.5rem;">
